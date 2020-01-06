@@ -1,0 +1,28 @@
+{
+  "name": "oracle",
+  "version": "1.0.0",
+  "description": "Discord bot which interacts with the AniList API to retrieve show information",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jehling/Oracle.git"
+  },
+  "keywords": [
+    "oracle",
+    "discord",
+    "anilist",
+    "anime"
+  ],
+  "author": "jehling117",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jehling/Oracle/issues"
+  },
+  "homepage": "https://github.com/jehling/Oracle#readme",
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
