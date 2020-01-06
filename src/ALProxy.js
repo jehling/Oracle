@@ -121,10 +121,3 @@ class ALProxy{
         return response;
     }
 }
-
-let async_func = async function(){
-        let result = await ALProxy.searchShowId(104276);
-        console.log(result);
-    };
-
-async_func();
