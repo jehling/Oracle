@@ -121,3 +121,6 @@ class ALProxy{
         return response;
     }
 }
+
+// Exports
+module.exports = {ALProxy};
