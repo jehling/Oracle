@@ -116,8 +116,15 @@ class ALProxy{
         let payload = this._assemblePayload(requestBody);
         let response = fetch(AL_ENDPOINT, payload)
             .then(response => response.json())
-            .then(response_json => response_json.data.Media)
-            .catch(error => console.error(error));
+            .then(response_json => {
+                let topError = response_json.errors[0];
+                if(response_json.errors) throw new Error(`Status: ${topError.status} - ${topError.message}`);
+                return response_json.data.Media;
+            })
+            .catch(error => {
+                console.error(error);
+                return undefined;
+            });
         return response;
     }
 }
