@@ -38,7 +38,7 @@ class ALProxy{
      * Assumption: Passed valid numeric ID
      * @param {*} showId - AniList integer ID for a show
      */
-    static buildRequestBody_IDSearch(showId){
+    static _buildRequestBody_IDSearch(showId){
         let queryBody = `query ($id: Int){
             Media (id: $id, type: ANIME){
                 ${AL_REQUEST_BODY}
@@ -65,7 +65,7 @@ class ALProxy{
      * ASSUMPTION: Passed safe string for Show Title
      * @param {*} showTitle - string representation of a show title
      */
-    static buildRequestBody_TitleSearch(showTitle){
+    static _buildRequestBody_TitleSearch(showTitle){
         let queryBody = `query ($search: String){
             Media (search: $search, type: ANIME){
                 ${AL_REQUEST_BODY}
@@ -91,7 +91,7 @@ class ALProxy{
      * Pass in response from respective "buildRequestBody" function
      * @param {*} requestBody - query and variables for respective request
      */
-    static assemblePayload(requestBody){
+    static _assemblePayload(requestBody){
         let payload = {
             method: 'POST',
             headers: {
@@ -112,8 +112,8 @@ class ALProxy{
         if(isNaN(showId)){
             throw Error("Invalid AniList ID: Please provide an Integer");
         }
-        let requestBody = this.buildRequestBody_IDSearch(showId);
-        let payload = this.assemblePayload(requestBody);
+        let requestBody = this._buildRequestBody_IDSearch(showId);
+        let payload = this._assemblePayload(requestBody);
         let response = fetch(AL_ENDPOINT, payload)
             .then(response => response.json())
             .then(response_json => response_json.data.Media)
