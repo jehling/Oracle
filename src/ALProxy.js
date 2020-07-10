@@ -7,17 +7,6 @@ const AL_REQUEST_BODY =
     `id
     status
     siteUrl
-    episodes
-    startDate{
-        day
-        month
-        year
-    }
-    endDate{
-        day
-        month
-        year
-    }
     title{
         romaji
         english
@@ -26,6 +15,7 @@ const AL_REQUEST_BODY =
     nextAiringEpisode{
         episode
         airingAt
+        timeUntilAiring
     }`;
 
 /**
@@ -117,8 +107,10 @@ class ALProxy{
         let response = fetch(AL_ENDPOINT, payload)
             .then(response => response.json())
             .then(response_json => {
-                let topError = response_json.errors[0];
-                if(response_json.errors) throw new Error(`Status: ${topError.status} - ${topError.message}`);
+                if(response_json.errors){
+                    let topError = response_json.errors[0];
+                    throw new Error(`Status: ${topError.status} - ${topError.message}`);
+                } 
                 return response_json.data.Media;
             })
             .catch(error => {

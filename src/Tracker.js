@@ -9,9 +9,19 @@ class Tracker{
         return this.trackedMediaIds.keys();
     }
 
-    track(mediaId){
-        if(!this.trackedMediaIds.has(mediaId)){
-            this.trackedMediaIds.set(mediaId, true);
+    isValidMediaId(mediaId){
+        return Number.isInteger(mediaId) && mediaId > 0;
+    }
+
+    async track(mediaId){
+        if(!this.hasMediaId(mediaId) && await this.isValidMediaId(mediaId)){
+            let show = await ALProxy.searchShowId(mediaId);
+            if(show){
+                console.log(`Now Tracking: ${mediaId} - ${show.title.english}`);
+                this.trackedMediaIds.set(mediaId, true);
+            }
+        } else{
+            console.log("invalid mediaId: ", mediaId);
         }
     }
 
@@ -19,7 +29,7 @@ class Tracker{
         this.trackedMediaIds.delete(mediaId);
     }
 
-    hasTitle(mediaId){
+    hasMediaId(mediaId){
         return this.trackedMediaIds.has(mediaId);
     }
 }
