@@ -1,12 +1,24 @@
 const { ALProxy } = require('./ALProxy');
 
+const AIRING_STATUS = {
+    FINISHED: "FINISHED",
+    RELEASING: "RELEASING",
+    NOT_YET_RELEASED: "NOT_YET_RELEASED",
+    CANCELLED: "CANCELLED",
+};
+const S_TO_MS = 1000;
+
 class Tracker{
     constructor(){
         this.trackedMediaIds = new Map();
     }
 
-    get mediaIds(){
-        return this.trackedMediaIds.keys();
+    getMediaIds(){
+        return Array.from(this.trackedMediaIds.keys());
+    }
+
+    hasMediaId(mediaId){
+        return this.trackedMediaIds.has(mediaId);
     }
 
     getshowTitle(mediaId){
@@ -20,7 +32,7 @@ class Tracker{
     async track(mediaId){
         if(!this.hasMediaId(mediaId) && await this.isValidMediaId(mediaId)){
             let show = await ALProxy.searchShowId(mediaId);
-            if(show){
+            if(show && show.status == AIRING_STATUS.RELEASING){
                 console.log(`Now Tracking: ${mediaId} - ${show.title.english}`);
                 this.trackedMediaIds.set(mediaId, show.title.english);
             }
@@ -38,8 +50,21 @@ class Tracker{
         }
     }
 
-    hasMediaId(mediaId){
-        return this.trackedMediaIds.has(mediaId);
+    isAiringToday(showObj){
+        let showDate = new Date(showObj.nextAiringEpisode.airingAt * S_TO_MS);
+        let localDate = new Date();
+        return showDate.getMonth() == localDate.getMonth() && showDate.getDate() == localDate.getDate() && showDate.getFullYear() == localDate.getFullYear();
+    }
+
+    async getAiringTodayList(){
+        let airingTodayList = [];
+        await this.getMediaIds().forEach(async (mediaId) => {
+            let showObj = await ALProxy.searchShowId(mediaId);
+            if(this.isAiringToday(showObj)){
+                airingTodayList.push(showObj);
+            }
+        });
+        return airingTodayList;
     }
 }
 
