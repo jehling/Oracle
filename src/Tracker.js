@@ -33,11 +33,10 @@ class Tracker{
         if(!this.hasMediaId(mediaId) && this.isValidMediaId(mediaId)){
             let show = await ALProxy.searchShowId(mediaId);
             if(show && show.status == AIRING_STATUS.RELEASING){
-                console.log(`Now Tracking: ${mediaId} - ${show.title.english}`);
-                this.trackedMediaIds.set(mediaId, show.title.english);
-            } else{
-                console.log(`Track Operation Failed - Show: "${show.title.english}" - Status: ${show.status}`);
-            }
+                let showTitle = show.title.english? show.title.english : show.title.romaji;
+                this.trackedMediaIds.set(mediaId, showTitle);
+                console.log(`Now Tracking: ${mediaId} - ${showTitle}`);
+            } 
         }
     }
 
