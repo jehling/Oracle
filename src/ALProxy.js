@@ -7,17 +7,6 @@ const AL_REQUEST_BODY =
     `id
     status
     siteUrl
-    episodes
-    startDate{
-        day
-        month
-        year
-    }
-    endDate{
-        day
-        month
-        year
-    }
     title{
         romaji
         english
@@ -26,6 +15,7 @@ const AL_REQUEST_BODY =
     nextAiringEpisode{
         episode
         airingAt
+        timeUntilAiring
     }`;
 
 /**
@@ -108,17 +98,19 @@ class ALProxy{
      * Make a MediaQuery request to the AniList API using a show's AniList ID
      * @param {*} showId - Integer AniList ID
      */
-    static searchShowId(showId){
+    static async searchShowId(showId){
         if(isNaN(showId)){
             throw Error("Invalid AniList ID: Please provide an Integer");
         }
         let requestBody = this._buildRequestBody_IDSearch(showId);
         let payload = this._assemblePayload(requestBody);
-        let response = fetch(AL_ENDPOINT, payload)
-            .then(response => response.json())
-            .then(response_json => response_json.data.Media)
-            .catch(error => console.error(error));
-        return response;
+        let response = await fetch(AL_ENDPOINT, payload);
+        let response_json = await response.json();
+        if(response_json.errors){
+            let topError = response_json.errors[0];
+            throw new Error(`Status: ${topError.status} - ${topError.message}`);
+        }
+        return response_json.data.Media;
     }
 }
 
