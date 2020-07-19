@@ -30,14 +30,14 @@ class Tracker{
     }
 
     async track(mediaId){
-        if(!this.hasMediaId(mediaId) && await this.isValidMediaId(mediaId)){
+        if(!this.hasMediaId(mediaId) && this.isValidMediaId(mediaId)){
             let show = await ALProxy.searchShowId(mediaId);
             if(show && show.status == AIRING_STATUS.RELEASING){
                 console.log(`Now Tracking: ${mediaId} - ${show.title.english}`);
                 this.trackedMediaIds.set(mediaId, show.title.english);
+            } else{
+                console.log(`Track Operation Failed - Show: "${show.title.english}" - Status: ${show.status}`);
             }
-        } else{
-            console.log("Failed to track invalid mediaId: ", mediaId);
         }
     }
 
@@ -45,8 +45,6 @@ class Tracker{
         if(this.hasMediaId(mediaId)){
             console.log(`Untracked: ${mediaId} - ${this.getshowTitle(mediaId)}`);
             this.trackedMediaIds.delete(mediaId);
-        } else{
-            console.log("Failed to untrack missing mediaId: ", mediaId);
         }
     }
 
@@ -58,12 +56,12 @@ class Tracker{
 
     async getAiringTodayList(){
         let airingTodayList = [];
-        await this.getMediaIds().forEach(async (mediaId) => {
+        for (const mediaId of this.getMediaIds()){
             let showObj = await ALProxy.searchShowId(mediaId);
             if(this.isAiringToday(showObj)){
                 airingTodayList.push(showObj);
             }
-        });
+        }
         return airingTodayList;
     }
 }
