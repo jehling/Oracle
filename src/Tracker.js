@@ -21,8 +21,9 @@ class Tracker{
         return this.trackedMediaIds.has(mediaId);
     }
 
-    getshowTitle(mediaId){
-        return this.trackedMediaIds.get(mediaId);
+    getShowTitle(mediaId){
+        let titleObj = this.trackedMediaIds.get(mediaId);
+        return titleObj.english? titleObj.english : titleObj.romaji;
     }
 
     isValidMediaId(mediaId){
@@ -33,8 +34,8 @@ class Tracker{
         if(!this.hasMediaId(mediaId) && this.isValidMediaId(mediaId)){
             let show = await ALProxy.searchShowId(mediaId);
             if(show && show.status == AIRING_STATUS.RELEASING){
+                this.trackedMediaIds.set(mediaId, show.title);
                 let showTitle = show.title.english? show.title.english : show.title.romaji;
-                this.trackedMediaIds.set(mediaId, showTitle);
                 console.log(`Now Tracking: ${mediaId} - ${showTitle}`);
             } 
         }
@@ -42,7 +43,7 @@ class Tracker{
 
     untrack(mediaId){
         if(this.hasMediaId(mediaId)){
-            console.log(`Untracked: ${mediaId} - ${this.getshowTitle(mediaId)}`);
+            console.log(`Untracked: ${mediaId} - ${this.getShowTitle(mediaId)}`);
             this.trackedMediaIds.delete(mediaId);
         }
     }
@@ -62,6 +63,16 @@ class Tracker{
             }
         }
         return airingTodayList;
+    }
+
+    async refreshMediaIds(){
+        for (const mediaId of this.getMediaIds()){
+            let showObj = await ALProxy.searchShowId(mediaId);
+            if(showObj.status != AIRING_STATUS.RELEASING){
+                console.log(`Untracked: ${mediaId} - "${this.getShowTitle(mediaId)}" because it is no longer airing.`);
+                this.trackedMediaIds.delete(mediaId);
+            }
+        }
     }
 }
 
