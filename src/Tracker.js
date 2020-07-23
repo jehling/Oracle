@@ -27,7 +27,7 @@ class Tracker{
     }
 
     isValidMediaId(mediaId){
-        let intMediaId = parseInt(mediaId, 10);
+        let intMediaId = Number(mediaId);
         return Number.isInteger(intMediaId) && intMediaId > 0;
     }
 
