@@ -27,7 +27,8 @@ class Tracker{
     }
 
     isValidMediaId(mediaId){
-        return Number.isInteger(mediaId) && mediaId > 0;
+        let intMediaId = parseInt(mediaId, 10);
+        return Number.isInteger(intMediaId) && intMediaId > 0;
     }
 
     async track(mediaId){
@@ -36,15 +37,16 @@ class Tracker{
             if(show && show.status == AIRING_STATUS.RELEASING){
                 this.trackedMediaIds.set(mediaId, show.title);
                 let showTitle = show.title.english? show.title.english : show.title.romaji;
-                console.log(`Now Tracking: ${mediaId} - ${showTitle}`);
+                return `**Now Tracking:** \`${mediaId}\`: "${showTitle}"`;
             } 
         }
     }
 
     untrack(mediaId){
         if(this.hasMediaId(mediaId)){
-            console.log(`Untracked: ${mediaId} - ${this.getShowTitle(mediaId)}`);
+            let responseString = `**Untracked:** \`${mediaId}\`: "${this.getShowTitle(mediaId)}"`;
             this.trackedMediaIds.delete(mediaId);
+            return responseString;
         }
     }
 
