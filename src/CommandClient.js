@@ -1,14 +1,16 @@
 const config = require('./config.json');
 const { Tracker } = require("./Tracker");
-// Commands (manual imports because blind loading is scary)
+// Commands (safe manual imports but not scalable)
 const jeremyCmd = require("./commands/jeremyCmd");
 const leskinenCmd = require("./commands/leskinenCmd");
 const trackCmd = require("./commands/trackCmd");
+const untrackCmd = require("./commands/untrackCmd");
 // Local command map
 const _commandMap = {
     [jeremyCmd.name]: jeremyCmd,
     [leskinenCmd.name]: leskinenCmd,
     [trackCmd.name]: trackCmd,
+    [untrackCmd.name]: untrackCmd,
 };
 // Data Model
 const tracker = new Tracker();
@@ -37,7 +39,7 @@ class CommandClient {
             if(!this.hasCommand(parsedMessage.command)) return;
             _commandMap[parsedMessage.command].execute(message, parsedMessage.args, tracker);
         } catch (error){
-            message.reply('Error: Invalid command args');
+            message.reply(error.message);
         }
     }
 }
