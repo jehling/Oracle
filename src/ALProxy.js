@@ -21,7 +21,7 @@ const AL_REQUEST_BODY =
 /**
  * Proxy class for interfacing with the AniList API
  */
-class ALProxy{
+class ALProxy {
     /**
      * Private helper function. 
      * Generates a MediaQuery search request using the AniListID
