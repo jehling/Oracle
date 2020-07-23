@@ -1,12 +1,16 @@
 const config = require('./config.json');
+// Commands (manual imports because blind loading is scary)
 const jeremyCmd = require("./commands/jeremyCmd");
 const leskinenCmd = require("./commands/leskinenCmd");
-
+// Local command map
 const _commandMap = {
     [jeremyCmd.name]: jeremyCmd,
     [leskinenCmd.name]: leskinenCmd,
 };
 
+/**
+ * Abstracted layer for command handling logic
+ */
 class CommandClient {
     static hasCommand(command){
         return _commandMap[command] != undefined;
