@@ -24,6 +24,6 @@
   "homepage": "https://github.com/jehling/Oracle#readme",
   "dependencies": {
     "discord.js": "^12.2.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   }
 }
