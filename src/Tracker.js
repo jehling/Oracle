@@ -71,7 +71,7 @@ class Tracker{
         for (const mediaId of this.getMediaIds()){
             let showObj = await ALProxy.searchShowId(mediaId);
             if(showObj.status != AIRING_STATUS.RELEASING){
-                console.log(`Untracked: ${mediaId} - "${this.getShowTitle(mediaId)}" is no longer airing.`);
+                console.log(`**Untracked:** \`${mediaId}\`: "${this.getShowTitle(mediaId)}" is no longer airing.`);
                 this.trackedMediaIds.delete(mediaId);
             }
         }
