@@ -41,7 +41,7 @@ class Tracker{
         if(mediaIds && mediaIds.length > 0){
             printString = "**Currently Tracking:**";
             for (const mediaId of mediaIds){
-                printString += `\n| - ${this.getShowPrintout(mediaId)}`;
+                printString += `\n**| -** ${this.getShowPrintout(mediaId)}`;
             }
         }
         return (printString.length > 0? printString : "No shows are currently being tracked.");
