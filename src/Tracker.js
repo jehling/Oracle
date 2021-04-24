@@ -21,14 +21,18 @@ class Tracker{
         return this.trackedMediaIds.has(mediaId);
     }
 
+    isValidMediaId(mediaId){
+        let intMediaId = Number(mediaId);
+        return Number.isInteger(intMediaId) && intMediaId > 0;
+    }
+
     getShowTitle(mediaId){
         let titleObj = this.trackedMediaIds.get(mediaId);
         return titleObj.english? titleObj.english : titleObj.romaji;
     }
 
-    isValidMediaId(mediaId){
-        let intMediaId = Number(mediaId);
-        return Number.isInteger(intMediaId) && intMediaId > 0;
+    getShowPrintout(mediaId){
+        return `\`${mediaId}\`: "${this.getShowTitle(mediaId)}"`;
     }
 
     getTrackingListPrintout(){
@@ -37,7 +41,7 @@ class Tracker{
         if(mediaIds && mediaIds.length > 0){
             printString = "**Currently Tracking:**";
             for (const mediaId of mediaIds){
-                printString += `\n| - \`${mediaId}\`: "${this.getShowTitle(mediaId)}"`;
+                printString += `\n| - ${this.getShowPrintout(mediaId)}`;
             }
         }
         return (printString.length > 0? printString : "No shows are currently being tracked.");
@@ -48,15 +52,14 @@ class Tracker{
             let show = await ALProxy.searchShowId(mediaId);
             if(show && show.status == AIRING_STATUS.RELEASING){
                 this.trackedMediaIds.set(mediaId, show.title);
-                let showTitle = show.title.english? show.title.english : show.title.romaji;
-                return `**Now Tracking:** \`${mediaId}\`: "${showTitle}"`;
+                return `**Now Tracking:** ${this.getShowPrintout(mediaId)}`;
             } 
         }
     }
 
     untrack(mediaId){
         if(this.hasMediaId(mediaId)){
-            let responseString = `**Untracked:** \`${mediaId}\`: "${this.getShowTitle(mediaId)}"`;
+            let responseString = `**Untracked:** ${this.getShowPrintout(mediaId)}`;
             this.trackedMediaIds.delete(mediaId);
             return responseString;
         }
@@ -83,7 +86,7 @@ class Tracker{
         for (const mediaId of this.getMediaIds()){
             let showObj = await ALProxy.searchShowId(mediaId);
             if(showObj.status != AIRING_STATUS.RELEASING){
-                console.log(`**Untracked:** \`${mediaId}\`: "${this.getShowTitle(mediaId)}" is no longer airing.`);
+                console.log(`**Untracked:** ${this.getShowPrintout(mediaId)} is no longer airing.`);
                 this.trackedMediaIds.delete(mediaId);
             }
         }
