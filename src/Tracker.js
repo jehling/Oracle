@@ -31,6 +31,18 @@ class Tracker{
         return Number.isInteger(intMediaId) && intMediaId > 0;
     }
 
+    getTrackingListPrintout(){
+        let mediaIds = this.getMediaIds();
+        let printString = ""; 
+        if(mediaIds && mediaIds.length > 0){
+            printString = "**Currently Tracking:**";
+            for (const mediaId of mediaIds){
+                printString += `\n| - \`${mediaId}\`: "${this.getShowTitle(mediaId)}"`;
+            }
+        }
+        return (printString.length > 0? printString : "No shows are currently being tracked.");
+    }
+
     async track(mediaId){
         if(!this.hasMediaId(mediaId) && this.isValidMediaId(mediaId)){
             let show = await ALProxy.searchShowId(mediaId);

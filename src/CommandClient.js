@@ -5,12 +5,14 @@ const jeremyCmd = require("./commands/jeremyCmd");
 const leskinenCmd = require("./commands/leskinenCmd");
 const trackCmd = require("./commands/trackCmd");
 const untrackCmd = require("./commands/untrackCmd");
+const listCmd = require("./commands/listCmd");
 // Local command map
 const _commandMap = {
     [jeremyCmd.name]: jeremyCmd,
     [leskinenCmd.name]: leskinenCmd,
     [trackCmd.name]: trackCmd,
     [untrackCmd.name]: untrackCmd,
+    [listCmd.name]: listCmd,
 };
 // Data Model
 const tracker = new Tracker();
