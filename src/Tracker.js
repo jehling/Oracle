@@ -9,6 +9,7 @@ const AIRING_STATUS = {
     CANCELLED: "CANCELLED",
 };
 const S_TO_MS = 1000;
+const TRACKED_SHOW_LIMIT = 2;
 
 /**
  * Class responsible for all tracking based functions. 
@@ -61,12 +62,18 @@ class Tracker{
 
     async track(mediaId){
         if(!this.hasMediaId(mediaId) && this.isValidMediaId(mediaId)){
+            if(this.getMediaIds().length >= TRACKED_SHOW_LIMIT){
+                return `**TRACK LIMIT REACHED -** \`${this.getMediaIds().length}/${TRACKED_SHOW_LIMIT} Active Shows.\``;
+            }
             let show = await ALProxy.searchShowId(mediaId);
             if(show && show.status == AIRING_STATUS.RELEASING){
                 this.trackedMediaIds.set(mediaId, show.title);
                 return `**Now Tracking:** ${this.showToString(mediaId)}`;
             } 
         }
+        let defaultPrintout = `**Not Tracked** - \`${mediaId}\`: `;
+        defaultPrintout+= this.hasMediaId(mediaId)? "Already being tracked." : "Invalid Media ID. Please only enter a set of integers.";
+        return defaultPrintout;
     }
 
     untrack(mediaId){
