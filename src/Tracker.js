@@ -31,19 +31,23 @@ class Tracker{
         return titleObj.english? titleObj.english : titleObj.romaji;
     }
 
-    printShow(mediaId){
+    showToString(mediaId){
         return `\`${mediaId}\`: "${this.getShowTitle(mediaId)}"`;
     }
 
-    getTrackingListPrintout(){
-        let mediaIds = this.getMediaIds();
-        let printString = ""; 
-        if(mediaIds && mediaIds.length > 0){
-            printString = "**Currently Tracking:**";
-            for (const mediaId of mediaIds){
-                printString += `\n**| -** ${this.printShow(mediaId)}`;
+    listToString(mediaIdList, listTitle = ""){
+        let listString = "";
+        if(mediaIdList && mediaIdList.length > 0){
+            listString = listTitle;
+            for (const mediaId of mediaIdList){
+                listString += `\n**| -** ${this.showToString(mediaId)}`;
             }
         }
+        return listString;
+    }
+
+    printTrackingList(){
+        let printString = this.listToString(this.getMediaIds(), "**Currently Tracking**");
         return (printString.length > 0? printString : "No shows are currently being tracked.");
     }
 
@@ -52,14 +56,14 @@ class Tracker{
             let show = await ALProxy.searchShowId(mediaId);
             if(show && show.status == AIRING_STATUS.RELEASING){
                 this.trackedMediaIds.set(mediaId, show.title);
-                return `**Now Tracking:** ${this.printShow(mediaId)}`;
+                return `**Now Tracking:** ${this.showToString(mediaId)}`;
             } 
         }
     }
 
     untrack(mediaId){
         if(this.hasMediaId(mediaId)){
-            let responseString = `**Untracked:** ${this.printShow(mediaId)}`;
+            let responseString = `**Untracked:** ${this.showToString(mediaId)}`;
             this.trackedMediaIds.delete(mediaId);
             return responseString;
         }
@@ -86,7 +90,7 @@ class Tracker{
         for (const mediaId of this.getMediaIds()){
             let showObj = await ALProxy.searchShowId(mediaId);
             if(showObj.status != AIRING_STATUS.RELEASING){
-                console.log(`**Untracked:** ${this.printShow(mediaId)} is no longer airing.`);
+                console.log(`**Untracked: No Longer Airing - ** ${this.showToString(mediaId)}`);
                 this.trackedMediaIds.delete(mediaId);
             }
         }
