@@ -71,8 +71,8 @@ class Tracker{
                 return `**Now Tracking:** ${this.showToString(mediaId)}`;
             } 
         }
-        let defaultPrintout = `**Not Tracked** - \`${mediaId}\`: `;
-        defaultPrintout+= this.hasMediaId(mediaId)? "Already being tracked." : "Invalid Media ID. Please only enter a set of integers.";
+        let defaultPrintout = `**NOT TRACKED** - \`${mediaId}\`: `;
+        defaultPrintout += this.hasMediaId(mediaId)? "Already being tracked." : "Invalid Media ID. Please only enter a set of integers.";
         return defaultPrintout;
     }
 
@@ -82,6 +82,9 @@ class Tracker{
             this.trackedMediaIds.delete(mediaId);
             return responseString;
         }
+        let defaultPrintout = `**NOT UNTRACKED** - \`${mediaId}\`: `;
+        defaultPrintout += this.isValidMediaId(mediaId)? "Media not currently being tracked." : "Invalid Media ID. Please only enter a set of integers";
+        return defaultPrintout;
     }
 
     isAiringToday(showObj){

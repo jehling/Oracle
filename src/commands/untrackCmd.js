@@ -3,7 +3,6 @@ module.exports = {
     description: "Untrack a show using the given AniList MediaID",
     execute(message, args, tracker){
         let mediaId = args[0];
-        let responseString = tracker.untrack(mediaId);
-        if(responseString) message.channel.send(responseString);
+        message.channel.send(tracker.untrack(mediaId));
     },
 }
