@@ -1,5 +1,7 @@
+// Imports
 const { ALProxy } = require('./ALProxy');
 
+// Constants
 const AIRING_STATUS = {
     FINISHED: "FINISHED",
     RELEASING: "RELEASING",
@@ -8,6 +10,12 @@ const AIRING_STATUS = {
 };
 const S_TO_MS = 1000;
 
+/**
+ * Class responsible for all tracking based functions. 
+ * Serves as seam between CommandClient and ALProxy
+ * This includes: data storage, retrieval, and pruning
+ * Also contains printout logic since its the info expert
+ */
 class Tracker{
     constructor(){
         this.trackedMediaIds = new Map();

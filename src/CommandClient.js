@@ -1,5 +1,8 @@
+// Imports
 const config = require('./config.json');
 const { Tracker } = require("./Tracker");
+
+// Constants
 // Commands (safe manual imports but not scalable)
 const leskinenCmd = require("./commands/leskinenCmd");
 const trackCmd = require("./commands/trackCmd");
@@ -16,7 +19,10 @@ const _commandMap = {
 const tracker = new Tracker();
 
 /**
- * Abstracted layer for command handling logic
+ * Abstracted layer for handling commands
+ * New Command Procedure: 
+ * - Add command to list of imports
+ * - Update _commandMap with new key-val pair
  */
 class CommandClient {
     static hasCommand(command){
