@@ -9,7 +9,7 @@ const AIRING_STATUS = {
     CANCELLED: "CANCELLED",
 };
 const S_TO_MS = 1000;
-const TRACKED_SHOW_LIMIT = 2;
+const TRACKED_SHOW_LIMIT = 10;
 
 /**
  * Class responsible for all tracking based functions. 
