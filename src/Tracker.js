@@ -60,6 +60,12 @@ class Tracker{
         return (printString.length > 0? printString : "No shows are currently being tracked.");
     }
 
+    async printAiringList(){
+        let airingMediaIdList = await this.getAiringTodayList();
+        let printString = this.listToString(airingMediaIdList, "**Currently Airing**");
+        return (printString.length > 0? printString : "No shows airing today.");
+    }
+
     async track(mediaId){
         if(!this.hasMediaId(mediaId) && this.isValidMediaId(mediaId)){
             if(this.getMediaIds().length >= TRACKED_SHOW_LIMIT){
@@ -87,7 +93,8 @@ class Tracker{
         return defaultPrintout;
     }
 
-    isAiringToday(showObj){
+    async isAiringToday(mediaId){
+        let showObj = await ALProxy.searchShowId(mediaId);
         let showDate = new Date(showObj.nextAiringEpisode.airingAt * S_TO_MS);
         let localDate = new Date();
         return showDate.getMonth() == localDate.getMonth() && showDate.getDate() == localDate.getDate() && showDate.getFullYear() == localDate.getFullYear();
@@ -96,10 +103,8 @@ class Tracker{
     async getAiringTodayList(){
         let airingTodayList = [];
         for (const mediaId of this.getMediaIds()){
-            let showObj = await ALProxy.searchShowId(mediaId);
-            if(this.isAiringToday(showObj)){
-                airingTodayList.push(showObj);
-            }
+            let isAiring = await this.isAiringToday(mediaId);
+            if(isAiring) airingTodayList.push(mediaId);
         }
         return airingTodayList;
     }

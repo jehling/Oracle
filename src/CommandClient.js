@@ -8,12 +8,14 @@ const leskinenCmd = require("./commands/leskinenCmd");
 const trackCmd = require("./commands/trackCmd");
 const untrackCmd = require("./commands/untrackCmd");
 const listCmd = require("./commands/listCmd");
+const airingCmd = require("./commands/airingCmd");
 // Local command map
 const _commandMap = {
     [leskinenCmd.name]: leskinenCmd,
     [trackCmd.name]: trackCmd,
     [untrackCmd.name]: untrackCmd,
     [listCmd.name]: listCmd,
+    [airingCmd.name]: airingCmd,
 };
 // Data Model
 const tracker = new Tracker();
