@@ -8,6 +8,10 @@ const AIRING_STATUS = {
     NOT_YET_RELEASED: "NOT_YET_RELEASED",
     CANCELLED: "CANCELLED",
 };
+const CUR_TRACK_STRING = "**Currently Tracking**";
+const NO_CUR_TRACK_STRING = "No shows currently being tracked.";
+const CUR_AIR_STRING = "**Currently Airing**";
+const NO_CUR_AIR_STRING = "No shows currently airing.";
 const S_TO_MS = 1000;
 const TRACKED_SHOW_LIMIT = 10;
 
@@ -56,14 +60,14 @@ class Tracker{
     }
 
     printTrackingList(){
-        let printString = this.listToString(this.getMediaIds(), "**Currently Tracking**");
-        return (printString.length > 0? printString : "No shows are currently being tracked.");
+        let printString = this.listToString(this.getMediaIds(), CUR_TRACK_STRING);
+        return (printString.length > 0? printString : NO_CUR_TRACK_STRING);
     }
 
     async printAiringList(){
         let airingMediaIdList = await this.getAiringTodayList();
-        let printString = this.listToString(airingMediaIdList, "**Currently Airing**");
-        return (printString.length > 0? printString : "No shows airing today.");
+        let printString = this.listToString(airingMediaIdList, CUR_AIR_STRING);
+        return (printString.length > 0? printString : NO_CUR_AIR_STRING);
     }
 
     async track(mediaId){

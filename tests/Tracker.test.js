@@ -8,7 +8,12 @@ const testTitleObj = {
     english: 'Cowboy Beebop',
     romaji: 'COWBOY BEEBOP'
 };
-
+const testShowString = `\`${testALID}\`: "${testTitleObj.english}"`;
+const testListString = `\n**| -** ${testShowString}`;
+const testTrackString = `**Currently Tracking**` + `${testListString}`;
+const testNoTrackString = `No shows currently being tracked.`;
+const testAirString = `**Currently Airing**` + `${testListString}`;
+const testNoAirString = `No shows currently airing.`;
 // Mocks
 
 // Tests
@@ -45,6 +50,47 @@ describe('Tracker Suite', () => {
         let tracker2 = new Tracker();
         tracker2.trackedMediaIds.set(testALID, { romaji: testTitleObj.romaji });
         expect(tracker2.getShowTitle(testALID)).toEqual(testTitleObj.romaji);
+    });
+
+    test('showToString', () => {
+        let testString = `\`${testALID}\`: "${testTitleObj.english}"`;
+        expect(tracker.showToString(testALID)).toEqual(testString);
+    });
+
+    test('listToString', () => {
+        expect(tracker.listToString([testALID])).toEqual(testListString);
+        tracker.trackedMediaIds.clear();
+        expect(tracker.listToString([])).toEqual("");
+    });
+
+    test('printTrackingList', () => {
+        expect(tracker.printTrackingList()).toEqual(testTrackString);
+        tracker.trackedMediaIds.clear();
+        expect(tracker.printTrackingList()).toEqual(testNoTrackString);
+    });
+
+    test('printAiringList', () => {
+        // TODO
+    });
+
+    test('track', () => {
+        // TODO
+    });
+
+    test('untrack', () => {
+        // TODO
+    });
+
+    test('isAiringToday', () => {
+        // TODO
+    });
+
+    test('getAiringTodayList', () => {
+        // TODO
+    });
+
+    test('refreshMediaIds', () => {
+        // TODO
     });
 });
 
