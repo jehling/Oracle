@@ -70,6 +70,22 @@ class Tracker{
         return (printString.length > 0? printString : NO_CUR_AIR_STRING);
     }
 
+    async isAiringToday(mediaId){
+        let showObj = await ALProxy.searchShowId(mediaId);
+        let showDate = new Date(showObj.nextAiringEpisode.airingAt * S_TO_MS);
+        let localDate = new Date();
+        return showDate.getDay() == localDate.getDay() && showDate.getMonth() == localDate.getMonth() && showDate.getFullYear() == localDate.getFullYear();;
+    }
+
+    async getAiringTodayList(){
+        let airingTodayList = [];
+        for (const mediaId of this.getMediaIds()){
+            let isAiring = await this.isAiringToday(mediaId);
+            if(isAiring) airingTodayList.push(mediaId);
+        }
+        return airingTodayList;
+    }
+
     async track(mediaId){
         if(!this.hasMediaId(mediaId) && this.isValidMediaId(mediaId)){
             if(this.getMediaIds().length >= TRACKED_SHOW_LIMIT){
@@ -95,22 +111,6 @@ class Tracker{
         let defaultPrintout = `**NOT UNTRACKED** - \`${mediaId}\`: `;
         defaultPrintout += this.isValidMediaId(mediaId)? "Media not currently being tracked." : "Invalid Media ID. Please only enter a set of integers";
         return defaultPrintout;
-    }
-
-    async isAiringToday(mediaId){
-        let showObj = await ALProxy.searchShowId(mediaId);
-        let showDate = new Date(showObj.nextAiringEpisode.airingAt * S_TO_MS);
-        let localDate = new Date();
-        return showDate.getDay() == localDate.getDay() && showDate.getMonth() == localDate.getMonth() && showDate.getFullYear() == localDate.getFullYear();;
-    }
-
-    async getAiringTodayList(){
-        let airingTodayList = [];
-        for (const mediaId of this.getMediaIds()){
-            let isAiring = await this.isAiringToday(mediaId);
-            if(isAiring) airingTodayList.push(mediaId);
-        }
-        return airingTodayList;
     }
 
     async refreshMediaIds(){

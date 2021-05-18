@@ -73,19 +73,19 @@ describe('Tracker Suite', () => {
         // TODO
     });
 
-    test('track', () => {
-        // TODO
-    });
-
-    test('untrack', () => {
-        // TODO
-    });
-
     test('isAiringToday', () => {
         // TODO
     });
 
     test('getAiringTodayList', () => {
+        // TODO
+    });
+
+    test('track', () => {
+        // TODO
+    });
+
+    test('untrack', () => {
         // TODO
     });
 
