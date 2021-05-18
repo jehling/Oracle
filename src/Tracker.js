@@ -12,7 +12,6 @@ const CUR_TRACK_STRING = "**Currently Tracking**";
 const NO_CUR_TRACK_STRING = "No shows currently being tracked.";
 const CUR_AIR_STRING = "**Currently Airing**";
 const NO_CUR_AIR_STRING = "No shows currently airing.";
-const S_TO_MS = 1000;
 const TRACKED_SHOW_LIMIT = 10;
 
 /**
@@ -72,7 +71,7 @@ class Tracker{
 
     async isAiringToday(mediaId){
         let showObj = await ALProxy.searchShowId(mediaId);
-        let showDate = new Date(showObj.nextAiringEpisode.airingAt * S_TO_MS);
+        let showDate = new Date(showObj.nextAiringEpisode.airingAt * 1000);
         let localDate = new Date();
         return showDate.getDay() == localDate.getDay() && showDate.getMonth() == localDate.getMonth() && showDate.getFullYear() == localDate.getFullYear();
     }
