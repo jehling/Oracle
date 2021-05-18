@@ -1,8 +1,19 @@
 // Testing Class
 const { Tracker } = require('../src/Tracker');
+const { ALProxy } = require('../src/ALProxy');
 
-// Testing Constants
+// Mocks
+jest.mock('../src/ALProxy');
+const mockShowObj = {
+    nextAiringEpisode: {
+        airingAt: Date.now() / 1000,
+    },
+};
+
+// Setup
 let tracker;
+
+// Constants
 const testALID = '1';
 const testTitleObj = {
     english: 'Cowboy Beebop',
@@ -14,13 +25,11 @@ const testTrackString = `**Currently Tracking**` + `${testListString}`;
 const testNoTrackString = `No shows currently being tracked.`;
 const testAirString = `**Currently Airing**` + `${testListString}`;
 const testNoAirString = `No shows currently airing.`;
-// Mocks
 
 // Tests
 describe('Tracker Suite', () => {
     // SETUP & TEARDOWN
     beforeEach(() => {
-        // TODO mock reset logic
         tracker = new Tracker();
         tracker.trackedMediaIds.set(testALID, testTitleObj);
     });
@@ -73,8 +82,9 @@ describe('Tracker Suite', () => {
         // TODO
     });
 
-    test('isAiringToday', () => {
-        // TODO
+    test('isAiringToday', async () => {
+        ALProxy.searchShowId.mockResolvedValue(mockShowObj);
+        expect(await tracker.isAiringToday(testALID)).toBeTruthy();
     });
 
     test('getAiringTodayList', () => {
