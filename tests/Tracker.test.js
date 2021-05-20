@@ -32,6 +32,7 @@ describe('Tracker Suite', () => {
     beforeEach(() => {
         tracker = new Tracker();
         tracker.trackedMediaIds.set(testALID, testTitleObj);
+        ALProxy.mockReset();
     });
     
     // TESTS
@@ -83,7 +84,15 @@ describe('Tracker Suite', () => {
     });
 
     test('isAiringToday', async () => {
+        const mockNotAiringShowObj = {
+            ...mockShowObj,
+            nextAiringEpisode: {
+                airingAt: Date.now() + 8.64e7,
+            },
+        };
+        ALProxy.searchShowId.mockResolvedValueOnce(mockNotAiringShowObj);
         ALProxy.searchShowId.mockResolvedValue(mockShowObj);
+        expect(await tracker.isAiringToday(testALID)).toBeFalsy();
         expect(await tracker.isAiringToday(testALID)).toBeTruthy();
     });
 
