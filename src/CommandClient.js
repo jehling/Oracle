@@ -8,14 +8,14 @@ const leskinenCmd = require("./commands/leskinenCmd");
 const trackCmd = require("./commands/trackCmd");
 const untrackCmd = require("./commands/untrackCmd");
 const listCmd = require("./commands/listCmd");
-const airingCmd = require("./commands/airingCmd");
+const airtodayCmd = require("./commands/airtodayCmd");
 // Local command map
 const _commandMap = {
     [leskinenCmd.name]: leskinenCmd,
     [trackCmd.name]: trackCmd,
     [untrackCmd.name]: untrackCmd,
     [listCmd.name]: listCmd,
-    [airingCmd.name]: airingCmd,
+    [airtodayCmd.name]: airtodayCmd,
 };
 // Data Model
 const tracker = new Tracker();
@@ -36,8 +36,9 @@ class CommandClient {
     }
 
     static parseMessage(message){
-        const args = message.content.slice(config.prefix.length).trim().split(/\s+/);
-        const command = args.shift().toLowerCase();
+        const processedMsg = message.content.trim().toLowerCase();
+        const args = processedMsg.slice(config.prefix.length).split(/\s+/);
+        const command = args.shift();
         return {args: args, command: command};
     }
 

@@ -9,9 +9,12 @@ const AIRING_STATUS = {
     CANCELLED: "CANCELLED",
 };
 const CUR_TRACK_STRING = "**Currently Tracking**";
-const NO_CUR_TRACK_STRING = "No shows currently being tracked.";
-const CUR_AIR_STRING = "**Currently Airing**";
-const NO_CUR_AIR_STRING = "No shows currently airing.";
+const NO_CUR_TRACK_STRING = "No shows are being tracked.";
+const AIR_TODAY_STRING = "**Airing Today**";
+const NO_AIR_TODAY_STRING = "No shows are airing today.";
+const CMD_IGN_STRING = "**Command Ignored**";
+const CMD_IGN_INVALID_ID_STRING = "Invalid Media ID. Please only enter a set of integers";
+const CMD_IGN_ERROR_STRING = "ERROR: Unknown state detected.";
 const TRACKED_SHOW_LIMIT = 10;
 
 /**
@@ -63,10 +66,10 @@ class Tracker{
         return (printString.length > 0? printString : NO_CUR_TRACK_STRING);
     }
 
-    async printAiringList(){
+    async printAirTodayList(){
         let airingMediaIdList = await this.getAiringTodayList();
-        let printString = this.listToString(airingMediaIdList, CUR_AIR_STRING);
-        return (printString.length > 0? printString : NO_CUR_AIR_STRING);
+        let printString = this.listToString(airingMediaIdList, AIR_TODAY_STRING);
+        return (printString.length > 0? printString : NO_AIR_TODAY_STRING);
     }
 
     async isAiringToday(mediaId){
@@ -96,8 +99,14 @@ class Tracker{
                 return `**Now Tracking:** ${this.showToString(mediaId)}`;
             } 
         }
-        let defaultPrintout = `**NOT TRACKED** - \`${mediaId}\`: `;
-        defaultPrintout += this.hasMediaId(mediaId)? "Already being tracked." : "Invalid Media ID. Please only enter a set of integers.";
+        let defaultPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
+        if(!this.isValidMediaId(mediaId)){
+            defaultPrintout += CMD_IGN_INVALID_ID_STRING;
+        } else if(this.hasMediaId(mediaId)){
+            defaultPrintout += "Media already being tracked.";
+        } else{
+            defaultPrintout += CMD_IGN_ERROR_STRING;
+        }
         return defaultPrintout;
     }
 
@@ -107,8 +116,14 @@ class Tracker{
             this.trackedMediaIds.delete(mediaId);
             return responseString;
         }
-        let defaultPrintout = `**NOT UNTRACKED** - \`${mediaId}\`: `;
-        defaultPrintout += this.isValidMediaId(mediaId)? "Media not currently being tracked." : "Invalid Media ID. Please only enter a set of integers";
+        let defaultPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
+        if(!this.isValidMediaId(mediaId)){
+            defaultPrintout += CMD_IGN_INVALID_ID_STRING;
+        } else if(!this.hasMediaId(mediaId)){
+            defaultPrintout += "Media not currently being tracked.";
+        } else{
+            defaultPrintout += CMD_IGN_ERROR_STRING;
+        }
         return defaultPrintout;
     }
 
@@ -116,7 +131,7 @@ class Tracker{
         for (const mediaId of this.getMediaIds()){
             let showObj = await ALProxy.searchShowId(mediaId);
             if(showObj.status != AIRING_STATUS.RELEASING){
-                console.log(`**Untracked: No Longer Airing - ** ${this.showToString(mediaId)}`);
+                console.log(`**Refreshed: No longer airing** - ${this.showToString(mediaId)}`);
                 this.trackedMediaIds.delete(mediaId);
             }
         }

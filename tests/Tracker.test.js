@@ -33,7 +33,7 @@ let tracker;
 const testShowString = `\`${mockShowObj.id}\`: "${mockShowObj.title.english}"`;
 const testListString = `\n**| -** ${testShowString}`;
 const testTrackString = `**Currently Tracking**` + `${testListString}`;
-const testNoTrackString = `No shows currently being tracked.`;
+const testNoTrackString = `No shows are being tracked.`;
 const testAirString = `**Currently Airing**` + `${testListString}`;
 const testNoAirString = `No shows currently airing.`;
 
