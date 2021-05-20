@@ -6,7 +6,7 @@ const { ALProxy } = require('../src/ALProxy');
 jest.mock('../src/ALProxy');
 const mockShowObj = {
     nextAiringEpisode: {
-        airingAt: Date.now() / 1000,
+        airingAt: Math.floor(Date.now() / 1000),
     },
 };
 
