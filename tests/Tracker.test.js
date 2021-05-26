@@ -13,10 +13,11 @@ const mockShowObj = {
     nextAiringEpisode: {
         airingAt: Math.floor(Date.now() / 1000),
     },
+    status: "RELEASING",
 };
 const mockNAShowObj = {
     ...mockShowObj,
-    id: 0,
+    id: 2,
     title: {
         english: 'Naruto',
         romaji: 'NARUTO'
@@ -24,6 +25,7 @@ const mockNAShowObj = {
     nextAiringEpisode: {
         airingAt: 0,
     },
+    status: "FINISHED",
 };
 
 // Setup
@@ -34,8 +36,6 @@ const testShowString = `\`${mockShowObj.id}\`: "${mockShowObj.title.english}"`;
 const testListString = `\n**| -** ${testShowString}`;
 const testTrackString = `**Currently Tracking**` + `${testListString}`;
 const testNoTrackString = `No shows are being tracked.`;
-const testAirString = `**Currently Airing**` + `${testListString}`;
-const testNoAirString = `No shows currently airing.`;
 
 // Tests
 describe('Tracker Suite', () => {
@@ -104,12 +104,19 @@ describe('Tracker Suite', () => {
 
     test('getAiringTodayList', async () => {
         tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title.english);
-        ALProxy.searchShowId.mockImplementation(id => id === 0? mockNAShowObj : mockShowObj);
+        ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
         expect(await tracker.getAiringTodayList()).toStrictEqual([mockShowObj.id]);
     });
 
-    test('track', () => {
-        // TODO
+    test('track', async () => {
+        tracker.trackedMediaIds.clear();
+        ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
+        ALProxy.searchShowId.mockResolvedValue(mockShowObj);
+        expect(await tracker.track(mockNAShowObj.id)).toEqual(`**Command Ignored**: \`${mockNAShowObj.id}\` - Media Status \`${mockNAShowObj.status} != RELEASING\``);
+        expect(await tracker.track(mockShowObj.id)).toEqual(`**Now Tracking:** ${testShowString}`);
+        const lenSpy = jest.spyOn(tracker, 'getNumIds').mockReturnValueOnce(100).mockReturnValueOnce(100);
+        expect(await tracker.track(mockShowObj.id)).toEqual(`**Command Ignored**: \`${mockShowObj.id}\` - **TRACK LIMIT REACHED -** \`100/10 Active Shows.\``);
+        expect(lenSpy).toHaveBeenCalledTimes(2);
     });
 
     test('untrack', () => {

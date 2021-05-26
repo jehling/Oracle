@@ -13,7 +13,7 @@ const NO_CUR_TRACK_STRING = "No shows are being tracked.";
 const AIR_TODAY_STRING = "**Airing Today**";
 const NO_AIR_TODAY_STRING = "No shows are airing today.";
 const CMD_IGN_STRING = "**Command Ignored**";
-const CMD_IGN_INVALID_ID_STRING = "Invalid Media ID. Please only enter a set of integers";
+const CMD_IGN_INVALID_ID_STRING = "Invalid Media ID. Please only enter an integer > 0";
 const CMD_IGN_ERROR_STRING = "ERROR: Unknown state detected.";
 const TRACKED_SHOW_LIMIT = 10;
 
@@ -30,6 +30,10 @@ class Tracker{
 
     getMediaIds(){
         return Array.from(this.trackedMediaIds.keys());
+    }
+
+    getNumIds(){
+        return this.getMediaIds().length;
     }
 
     hasMediaId(mediaId){
@@ -89,25 +93,24 @@ class Tracker{
     }
 
     async track(mediaId){
-        if(!this.hasMediaId(mediaId) && this.isValidMediaId(mediaId)){
-            if(this.getMediaIds().length >= TRACKED_SHOW_LIMIT){
-                return `**TRACK LIMIT REACHED -** \`${this.getMediaIds().length}/${TRACKED_SHOW_LIMIT} Active Shows.\``;
-            }
-            let show = await ALProxy.searchShowId(mediaId);
-            if(show && show.status == AIRING_STATUS.RELEASING){
-                this.trackedMediaIds.set(mediaId, show.title);
-                return `**Now Tracking:** ${this.showToString(mediaId)}`;
-            } 
-        }
-        let defaultPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
-        if(!this.isValidMediaId(mediaId)){
-            defaultPrintout += CMD_IGN_INVALID_ID_STRING;
+        // Error Checking
+        let errPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
+        if(this.getNumIds() >= TRACKED_SHOW_LIMIT){
+            return errPrintout + `**TRACK LIMIT REACHED -** \`${this.getNumIds()}/${TRACKED_SHOW_LIMIT} Active Shows.\``;
         } else if(this.hasMediaId(mediaId)){
-            defaultPrintout += "Media already being tracked.";
-        } else{
-            defaultPrintout += CMD_IGN_ERROR_STRING;
+            return errPrintout + "Media already being tracked.";
+        } else if(!this.isValidMediaId(mediaId)){
+            return errPrintout + CMD_IGN_INVALID_ID_STRING;
+        } 
+        // Execution
+        let show = await ALProxy.searchShowId(mediaId);
+        if(show && show.status == AIRING_STATUS.RELEASING){
+            this.trackedMediaIds.set(mediaId, show.title);
+            return `**Now Tracking:** ${this.showToString(mediaId)}`;
+        } else if(show && show.status != AIRING_STATUS.RELEASING){
+            return errPrintout + `Media Status \`${show.status} != ${AIRING_STATUS.RELEASING}\``;
         }
-        return defaultPrintout;
+        return errPrintout + CMD_IGN_ERROR_STRING;
     }
 
     untrack(mediaId){
