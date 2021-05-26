@@ -120,7 +120,9 @@ describe('Tracker Suite', () => {
     });
 
     test('untrack', () => {
-        // TODO
+        expect(tracker.untrack(mockShowObj.id)).toEqual(`**Untracked:** ${testShowString}`);
+        expect(tracker.untrack('abc')).toEqual(`**Command Ignored**: \`abc\` - Invalid Media ID. Please only enter an integer > 0`);
+        expect(tracker.untrack(mockShowObj.id)).toEqual(`**Command Ignored**: \`${mockShowObj.id}\` - Media not currently being tracked.`);
     });
 
     test('refreshMediaIds', () => {

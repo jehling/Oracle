@@ -97,11 +97,11 @@ class Tracker{
         let errPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
         if(this.getNumIds() >= TRACKED_SHOW_LIMIT){
             return errPrintout + `**TRACK LIMIT REACHED -** \`${this.getNumIds()}/${TRACKED_SHOW_LIMIT} Active Shows.\``;
-        } else if(this.hasMediaId(mediaId)){
-            return errPrintout + "Media already being tracked.";
         } else if(!this.isValidMediaId(mediaId)){
             return errPrintout + CMD_IGN_INVALID_ID_STRING;
-        } 
+        } else if(this.hasMediaId(mediaId)){
+            return errPrintout + "Media already being tracked.";
+        }
         // Execution
         let show = await ALProxy.searchShowId(mediaId);
         if(show && show.status == AIRING_STATUS.RELEASING){
@@ -114,20 +114,17 @@ class Tracker{
     }
 
     untrack(mediaId){
-        if(this.hasMediaId(mediaId)){
-            let responseString = `**Untracked:** ${this.showToString(mediaId)}`;
-            this.trackedMediaIds.delete(mediaId);
-            return responseString;
-        }
-        let defaultPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
+        // Error Checking
+        let errPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
         if(!this.isValidMediaId(mediaId)){
-            defaultPrintout += CMD_IGN_INVALID_ID_STRING;
+            return errPrintout + CMD_IGN_INVALID_ID_STRING;
         } else if(!this.hasMediaId(mediaId)){
-            defaultPrintout += "Media not currently being tracked.";
-        } else{
-            defaultPrintout += CMD_IGN_ERROR_STRING;
+            return errPrintout + "Media not currently being tracked.";
         }
-        return defaultPrintout;
+        // Execution
+        let responseString = `**Untracked:** ${this.showToString(mediaId)}`;
+        this.trackedMediaIds.delete(mediaId);
+        return responseString;
     }
 
     async refreshMediaIds(){
