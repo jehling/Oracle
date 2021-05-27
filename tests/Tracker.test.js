@@ -117,6 +117,7 @@ describe('Tracker Suite', () => {
         const lenSpy = jest.spyOn(tracker, 'getNumIds').mockReturnValueOnce(100).mockReturnValueOnce(100);
         expect(await tracker.track(mockShowObj.id)).toEqual(`**Command Ignored**: \`${mockShowObj.id}\` - **TRACK LIMIT REACHED -** \`100/10 Active Shows.\``);
         expect(lenSpy).toHaveBeenCalledTimes(2);
+        expect(await tracker.track(mockShowObj.id)).toEqual(`**Command Ignored**: \`${mockShowObj.id}\` - Media already being tracked.`);
     });
 
     test('untrack', () => {
