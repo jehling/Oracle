@@ -95,7 +95,7 @@ describe('Tracker Suite', () => {
     });
 
     test('isAiringToday', async () => {
-        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title.english);
+        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
         ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
         ALProxy.searchShowId.mockResolvedValue(mockShowObj);
         expect(await tracker.isAiringToday(mockNAShowObj.id)).toBeFalsy();
@@ -103,7 +103,7 @@ describe('Tracker Suite', () => {
     });
 
     test('getAiringTodayList', async () => {
-        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title.english);
+        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
         ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
         expect(await tracker.getAiringTodayList()).toStrictEqual([mockShowObj.id]);
     });
@@ -126,8 +126,12 @@ describe('Tracker Suite', () => {
         expect(tracker.untrack(mockShowObj.id)).toEqual(`**Command Ignored**: \`${mockShowObj.id}\` - Media not currently being tracked.`);
     });
 
-    test('refreshMediaIds', () => {
-        // TODO
+    test('refreshMediaIds', async () => {
+        ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
+        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
+        expect(tracker.hasMediaId(mockNAShowObj.id)).toBeTruthy();
+        await tracker.refreshMediaIds();
+        expect(tracker.hasMediaId(mockNAShowObj.id)).toBeFalsy();
     });
 });
 
