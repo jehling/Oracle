@@ -91,27 +91,30 @@ describe('Tracker Suite', () => {
     });
 
     test('printAiringList', () => {
-        // TODO
+        ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
+        ALProxy.searchShowId.mockResolvedValue(mockShowObj);
+        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
+
     });
 
     test('isAiringToday', async () => {
-        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
         ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
         ALProxy.searchShowId.mockResolvedValue(mockShowObj);
+        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
         expect(await tracker.isAiringToday(mockNAShowObj.id)).toBeFalsy();
         expect(await tracker.isAiringToday(mockShowObj.id)).toBeTruthy();
     });
 
     test('getAiringTodayList', async () => {
-        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
         ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
+        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
         expect(await tracker.getAiringTodayList()).toStrictEqual([mockShowObj.id]);
     });
 
     test('track', async () => {
-        tracker.trackedMediaIds.clear();
         ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
         ALProxy.searchShowId.mockResolvedValue(mockShowObj);
+        tracker.trackedMediaIds.clear();
         expect(await tracker.track(mockNAShowObj.id)).toEqual(`**Command Ignored**: \`${mockNAShowObj.id}\` - Media Status \`${mockNAShowObj.status} != RELEASING\``);
         expect(await tracker.track(mockShowObj.id)).toEqual(`**Now Tracking:** ${testShowString}`);
         const lenSpy = jest.spyOn(tracker, 'getNumIds').mockReturnValueOnce(100).mockReturnValueOnce(100);
