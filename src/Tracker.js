@@ -78,7 +78,7 @@ class Tracker{
 
     async isAiringToday(mediaId){
         let showObj = await ALProxy.searchShowId(mediaId);
-        let showDate = new Date(showObj.nextAiringEpisode.airingAt * 1000);
+        let showDate = new Date(showObj.nextAiringEpisode.airingAt);
         let localDate = new Date();
         return showDate.getDay() == localDate.getDay() && showDate.getMonth() == localDate.getMonth() && showDate.getFullYear() == localDate.getFullYear();
     }

@@ -110,7 +110,10 @@ class ALProxy {
             let topError = response_json.errors[0];
             throw new Error(`Status: ${topError.status} - ${topError.message}`);
         }
-        return response_json.data.Media;
+        // Adjust AniList epoch time (seconds) to javascript (milliseconds)
+        let mediaObj = response_json.data.Media;
+        mediaObj.nextAiringEpisode.airingAt = mediaObj.nextAiringEpisode.airingAt * 1000;
+        return mediaObj;
     }
 }
 

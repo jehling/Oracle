@@ -11,7 +11,7 @@ const mockShowObj = {
         romaji: 'COWBOY BEEBOP'
     },
     nextAiringEpisode: {
-        airingAt: Math.floor(Date.now() / 1000),
+        airingAt: Date.now(),
     },
     status: "RELEASING",
 };
@@ -98,8 +98,7 @@ describe('Tracker Suite', () => {
     });
 
     test('isAiringToday', async () => {
-        ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
-        ALProxy.searchShowId.mockResolvedValue(mockShowObj);
+        ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
         tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
         expect(await tracker.isAiringToday(mockNAShowObj.id)).toBeFalsy();
         expect(await tracker.isAiringToday(mockShowObj.id)).toBeTruthy();
