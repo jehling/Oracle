@@ -99,10 +99,11 @@ class ALProxy {
      * @param {*} showId - Integer AniList ID
      */
     static async searchShowId(showId){
-        if(isNaN(showId)){
+        let intMediaId = Number(showId);
+        if(!Number.isInteger(intMediaId) || intMediaId < 0){
             throw Error("Invalid AniList ID: Please provide an Integer");
         }
-        let requestBody = this._buildRequestBody_IDSearch(showId);
+        let requestBody = this._buildRequestBody_IDSearch(intMediaId);
         let payload = this._assemblePayload(requestBody);
         let response = await fetch(AL_ENDPOINT, payload);
         let response_json = await response.json();
@@ -110,9 +111,10 @@ class ALProxy {
             let topError = response_json.errors[0];
             throw new Error(`Status: ${topError.status} - ${topError.message}`);
         }
-        // Adjust AniList epoch time (seconds) to javascript (milliseconds)
+        // Adjust AniList epoch time (seconds) for JavaScript (milliseconds)
+        // NOTE: nextAiringEpisode field is null when show is not airing
         let mediaObj = response_json.data.Media;
-        mediaObj.nextAiringEpisode.airingAt = mediaObj.nextAiringEpisode.airingAt * 1000;
+        if(mediaObj.nextAiringEpisode) mediaObj.nextAiringEpisode.airingAt = mediaObj.nextAiringEpisode.airingAt * 1000;
         return mediaObj;
     }
 }

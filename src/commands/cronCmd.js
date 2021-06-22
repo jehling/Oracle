@@ -5,7 +5,7 @@ const Scheduler = require('node-schedule');
 // Data Structs
 const CRON_RULE = new Scheduler.RecurrenceRule();
 CRON_RULE.hour = 0;
-CRON_RULE.minute = 50;
+CRON_RULE.minute = 0;
 CRON_RULE.second = 0;
 const CRON_MODE = {
     ENABLE: "enable",
