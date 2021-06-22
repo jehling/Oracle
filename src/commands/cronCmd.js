@@ -3,6 +3,10 @@
 const Scheduler = require('node-schedule');
 
 // Data Structs
+const CRON_RULE = new Scheduler.RecurrenceRule();
+CRON_RULE.hour = 0;
+CRON_RULE.minute = 50;
+CRON_RULE.second = 0;
 const CRON_MODE = {
     ENABLE: "enable",
     DISABLE: "disable",
@@ -17,7 +21,7 @@ module.exports = {
             case CRON_MODE.ENABLE:
                 if(!cronJob){
                     try{
-                        cronJob = Scheduler.scheduleJob('* * 0 * * *', function(){
+                        cronJob = Scheduler.scheduleJob(CRON_RULE, function(){
                             tracker.printAirTodayList().then(responseString => message.channel.send(responseString));
                         });
                         message.channel.send("Cron job enabled.");
