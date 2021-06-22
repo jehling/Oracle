@@ -9,6 +9,7 @@ const trackCmd = require("./commands/trackCmd");
 const untrackCmd = require("./commands/untrackCmd");
 const listCmd = require("./commands/listCmd");
 const airtodayCmd = require("./commands/airtodayCmd");
+const cronCmd = require('./commands/cronCmd');
 // Local command map
 const _commandMap = {
     [leskinenCmd.name]: leskinenCmd,
@@ -16,6 +17,7 @@ const _commandMap = {
     [untrackCmd.name]: untrackCmd,
     [listCmd.name]: listCmd,
     [airtodayCmd.name]: airtodayCmd,
+    [cronCmd.name]: cronCmd,
 };
 // Data Model
 const tracker = new Tracker();
