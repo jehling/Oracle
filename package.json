@@ -25,7 +25,8 @@
   "dependencies": {
     "discord.js": "^12.2.0",
     "node-fetch": "^2.6.1",
-    "node-schedule": "^2.0.0"
+    "node-schedule": "^2.0.0",
+    "ws": ">=7.4.6"
   },
   "devDependencies": {
     "jest": "^26.6.3"
