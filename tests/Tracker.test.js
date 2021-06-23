@@ -114,18 +114,18 @@ describe('Tracker Suite', () => {
         ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
         ALProxy.searchShowId.mockResolvedValue(mockShowObj);
         tracker.trackedMediaIds.clear();
-        expect(await tracker.track(mockNAShowObj.id)).toEqual(`**Command Ignored**: \`${mockNAShowObj.id}\` - Media Status \`${mockNAShowObj.status} != RELEASING\``);
+        expect(await tracker.track(mockNAShowObj.id)).toEqual(`**Command Ignored**: Media Status \`${mockNAShowObj.status} != RELEASING\``);
         expect(await tracker.track(mockShowObj.id)).toEqual(`**Now Tracking (1/10):** ${testShowString}.`);
         const lenSpy = jest.spyOn(tracker, 'getNumIds').mockReturnValueOnce(100).mockReturnValueOnce(100);
-        expect(await tracker.track(mockShowObj.id)).toEqual(`**Command Ignored**: \`${mockShowObj.id}\` - **TRACK LIMIT REACHED (100/10).** Please untrack one or more to make room.`);
+        expect(await tracker.track(mockShowObj.id)).toEqual(`**Command Ignored**: **TRACK LIMIT REACHED (100/10).** Please untrack one or more to make room.`);
         expect(lenSpy).toHaveBeenCalledTimes(2);
-        expect(await tracker.track(mockShowObj.id)).toEqual(`**Command Ignored**: \`${mockShowObj.id}\` - Media already being tracked.`);
+        expect(await tracker.track(mockShowObj.id)).toEqual(`**Command Ignored**: Media already being tracked.`);
     });
 
     test('untrack', () => {
         expect(tracker.untrack(mockShowObj.id)).toEqual(`**Untracked (0/10):** ${testShowString}.`);
-        expect(tracker.untrack('abc')).toEqual(`**Command Ignored**: \`abc\` - Invalid Media ID. Please only enter an integer > 0`);
-        expect(tracker.untrack(mockShowObj.id)).toEqual(`**Command Ignored**: \`${mockShowObj.id}\` - Media not currently being tracked.`);
+        expect(tracker.untrack('abc')).toEqual(`**Command Ignored**: Invalid Media ID. Please only enter an integer > 0`);
+        expect(tracker.untrack(mockShowObj.id)).toEqual(`**Command Ignored**: Media not currently being tracked.`);
     });
 
     test('refreshMediaIds', async () => {

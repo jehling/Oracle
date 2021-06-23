@@ -98,32 +98,35 @@ class Tracker{
 
     async track(mediaId){
         // Error Checking
-        let errPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
         if(this.getNumIds() >= TRACKED_SHOW_LIMIT){
-            return errPrintout + `**TRACK LIMIT REACHED ${this.printShowCount()}.** Please untrack one or more to make room.`;
+            return `${CMD_IGN_STRING}: **TRACK LIMIT REACHED ${this.printShowCount()}.** Please untrack one or more to make room.`;
         } else if(!this.isValidMediaId(mediaId)){
-            return errPrintout + CMD_IGN_INVALID_ID_STRING;
+            return `${CMD_IGN_STRING}: ${CMD_IGN_INVALID_ID_STRING}`;
         } else if(this.hasMediaId(mediaId)){
-            return errPrintout + "Media already being tracked.";
+            return `${CMD_IGN_STRING}: Media already being tracked.`;
         }
         // Execution
-        let show = await ALProxy.searchShowId(mediaId);
+        let show;
+        try{
+            show = await ALProxy.searchShowId(mediaId);
+        } catch (err){
+            return `${err.name}: ${err.message}`;
+        }
         if(show && show.status == AIRING_STATUS.RELEASING){
             this.trackedMediaIds.set(mediaId, show.title);
             return `**Now Tracking ${this.printShowCount()}:** ${this.showToString(mediaId)}.`;
         } else if(show && show.status != AIRING_STATUS.RELEASING){
-            return errPrintout + `Media Status \`${show.status} != ${AIRING_STATUS.RELEASING}\``;
+            return `${CMD_IGN_STRING}: Media Status \`${show.status} != ${AIRING_STATUS.RELEASING}\``;
         }
-        return errPrintout + CMD_IGN_ERROR_STRING;
+        return `${CMD_IGN_STRING}: ${CMD_IGN_ERROR_STRING}`;
     }
 
     untrack(mediaId){
         // Error Checking
-        let errPrintout = `${CMD_IGN_STRING}: \`${mediaId}\` - `;
         if(!this.isValidMediaId(mediaId)){
-            return errPrintout + CMD_IGN_INVALID_ID_STRING;
+            return `${CMD_IGN_STRING}: ${CMD_IGN_INVALID_ID_STRING}`;
         } else if(!this.hasMediaId(mediaId)){
-            return errPrintout + "Media not currently being tracked.";
+            return `${CMD_IGN_STRING}: Media not currently being tracked.`;
         }
         // Execution
         let untrackedShowStr = this.showToString(mediaId);

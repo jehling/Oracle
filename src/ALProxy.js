@@ -101,7 +101,9 @@ class ALProxy {
     static async searchShowId(showId){
         let intMediaId = Number(showId);
         if(!Number.isInteger(intMediaId) || intMediaId < 0){
-            throw Error("Invalid AniList ID: Please provide an Integer");
+            let err = new Error("Invalid AniList ID. Please provide an Integer");
+            err.name = "AniListError";
+            throw err;
         }
         let requestBody = this._buildRequestBody_IDSearch(intMediaId);
         let payload = this._assemblePayload(requestBody);
@@ -109,7 +111,10 @@ class ALProxy {
         let response_json = await response.json();
         if(response_json.errors){
             let topError = response_json.errors[0];
-            throw new Error(`Status: ${topError.status} - ${topError.message}`);
+            let err = new Error();
+            err.message = (topError.status == "404"? `${topError.status} - Show not found.` : `${topError.status} - ${topError.message}`);
+            err.name = "AniListError";
+            throw err;
         }
         // Adjust AniList epoch time (seconds) for JavaScript (milliseconds)
         // NOTE: nextAiringEpisode field is null when show is not airing
