@@ -19,8 +19,6 @@ const _commandMap = {
     [airtodayCmd.name]: airtodayCmd,
     [cronCmd.name]: cronCmd,
 };
-// Data Model
-const tracker = new Tracker();
 
 /**
  * Abstracted layer for handling commands
@@ -29,7 +27,11 @@ const tracker = new Tracker();
  * - Update _commandMap with new key-val pair
  */
 class CommandClient {
-    static hasCommand(command){
+    constructor(){
+        this.tracker = new Tracker();
+    }
+
+    hasCommand(command){
         return _commandMap[command] != undefined;
     }
 
@@ -37,18 +39,18 @@ class CommandClient {
         return message.content.startsWith(config.prefix) && !message.author.bot;
     }
 
-    static parseMessage(message){
+    parseMessage(message){
         const processedMsg = message.content.trim().toLowerCase();
         const args = processedMsg.slice(config.prefix.length).split(/\s+/);
         const command = args.shift();
         return {args: args, command: command};
     }
 
-    static execute(message){
+    execute(message){
         let parsedMessage = this.parseMessage(message);
         try{
             if(!this.hasCommand(parsedMessage.command)) return;
-            _commandMap[parsedMessage.command].execute(message, parsedMessage.args, tracker);
+            _commandMap[parsedMessage.command].execute(message, parsedMessage.args, this.tracker);
         } catch (error){
             message.reply(error.message);
         }
