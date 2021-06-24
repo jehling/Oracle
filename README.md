@@ -9,6 +9,7 @@ Lightweight Discord bot designed to interface with [AniList](https://anilist.co/
     - [List](#list)
     - [Airing Today](#airing-today)
     - [Cron](#cron)
+    - [Leskinen](#leskinen)
 
 ## Setup
 After adding Oracle to your Discord server, enter a channel you want the bot to push daily reports to and use the `.cron enable` command. Henceforth, Oracle will push summaries of shows airing that day to this channel. \
