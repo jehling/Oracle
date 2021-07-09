@@ -3,7 +3,9 @@ Lightweight Discord bot designed to interface with [AniList](https://anilist.co/
 
 ## Table of Contents
 - [Setup](#setup)
+- [Customization](#customization)
 - [Commands](#commands)
+    - [Help](#help)
     - [Track](#track)
     - [Untrack](#untrack)
     - [List](#list)
@@ -16,7 +18,53 @@ After adding Oracle to your Discord server, enter a channel you want the bot to 
 
 To select a different channel use the `.cron disable` command and repeat the process described above.
 
+## Customization
+1. Copy the format of an arbitrary `command block` inside the `commands/` directory. 
+    - Make sure to follow the file name guidelines `nameCmd.js`. 
+2. Write custom functionality inside the `command block's execute() field`.
+3. Add new `command block` to the list of imports at the top of the `CommandClient.js` class.
+4. Update the `_commandMap` Map object inside of `CommandClient` with the `key` set to `command.name` and the `value` set to the `command block`.
+
+**E.g. Command Block:** `customCmd.js`
+```
+const { prefix } = require('../config.json');
+
+module.exports = {
+    name: 'custom',
+    desc: "Performs a custom function",
+    syntax: `${prefix}custom [optional_args]`,
+    execute(message, args, tracker){
+        // Write custom logic here!
+        // TODO
+    },
+}
+```
+
+**E.g. Updating Command Client**
+```
+// Constants
+...
+const customCmd = require('./commands/customCmd');
+...
+// Local command map
+const _commandMap = new Map([
+    ...,
+    [`${customCmd.name}`, customCmd]
+]);
+```
+
 ## Commands
+**Syntax Legend:**
+- `[ ... ]`: denotes an optional argument. 
+- `< ... >`: denotes a mandatory argument.
+- `A | ... | Z`: denotes a set of potential arguments. Provide one.
+- `A, ..., Z`: denotes a list of 1+ arguments. Provide multiple.
+
+### Help
+- **Syntax:** `.help [command_name]` 
+- **Description:** Track up to N shows their respective AniList IDs.
+- **Ex:** `.track 1 --> "Now Tracking (1/N): 1: Cowboy Beebop"`
+
 ### Track
 - **Syntax:** `.track <integer_anilist_id>` 
 - **Description:** Track up to N shows their respective AniList IDs.
