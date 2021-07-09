@@ -11,14 +11,14 @@ const listCmd = require("./commands/listCmd");
 const airtodayCmd = require("./commands/airtodayCmd");
 const cronCmd = require('./commands/cronCmd');
 // Local command map
-const _commandMap = {
-    [leskinenCmd.name]: leskinenCmd,
-    [trackCmd.name]: trackCmd,
-    [untrackCmd.name]: untrackCmd,
-    [listCmd.name]: listCmd,
-    [airtodayCmd.name]: airtodayCmd,
-    [cronCmd.name]: cronCmd,
-};
+const _commandMap = new Map([
+    [`${leskinenCmd.name}`, leskinenCmd],
+    [`${trackCmd.name}`, trackCmd],
+    [`${untrackCmd.name}`, untrackCmd],
+    [`${listCmd.name}`, listCmd],
+    [`${airtodayCmd.name}`, airtodayCmd],
+    [`${cronCmd.name}`, cronCmd]
+]);
 
 /**
  * Abstracted layer for handling commands
@@ -29,10 +29,6 @@ const _commandMap = {
 class CommandClient {
     constructor(){
         this.tracker = new Tracker();
-    }
-
-    hasCommand(command){
-        return _commandMap[command] != undefined;
     }
 
     static isCommand(message){
@@ -49,10 +45,28 @@ class CommandClient {
     execute(message){
         let parsedMessage = this.parseMessage(message);
         try{
-            if(!this.hasCommand(parsedMessage.command)) return;
-            _commandMap[parsedMessage.command].execute(message, parsedMessage.args, this.tracker);
+            if(parsedMessage.command === "help"){
+                this.help(message, parsedMessage.args);
+            } else if(!_commandMap.has(parsedMessage.command)){
+                throw new Error("Command not found.");
+            } else{
+                _commandMap.get(parsedMessage.command).execute(message, parsedMessage.args, this.tracker);
+            } 
         } catch (error){
             message.reply(error.message);
+        }
+    }
+
+    help(message, args){
+        if(args.length == 0){
+            let header = "For more details, enter \`help commandName\`.\n";
+            let cmdPrintout = `**Command List:**\n`;
+            for (const cmd of _commandMap.values()){
+                cmdPrintout += `**|-** \`${cmd.name} : ${cmd.description}\`\n`;
+            }
+            message.reply(header + cmdPrintout);
+        } else{
+            // todo
         }
     }
 }
