@@ -10,15 +10,17 @@ const untrackCmd = require("./commands/untrackCmd");
 const listCmd = require("./commands/listCmd");
 const airtodayCmd = require("./commands/airtodayCmd");
 const cronCmd = require('./commands/cronCmd');
+const helpCmd = require('./commands/helpCmd');
 // Local command map
-const _commandMap = {
-    [leskinenCmd.name]: leskinenCmd,
-    [trackCmd.name]: trackCmd,
-    [untrackCmd.name]: untrackCmd,
-    [listCmd.name]: listCmd,
-    [airtodayCmd.name]: airtodayCmd,
-    [cronCmd.name]: cronCmd,
-};
+const _commandMap = new Map([
+    [`${leskinenCmd.name}`, leskinenCmd],
+    [`${trackCmd.name}`, trackCmd],
+    [`${untrackCmd.name}`, untrackCmd],
+    [`${listCmd.name}`, listCmd],
+    [`${airtodayCmd.name}`, airtodayCmd],
+    [`${cronCmd.name}`, cronCmd],
+    [`${helpCmd.name}`, helpCmd]
+]);
 
 /**
  * Abstracted layer for handling commands
@@ -29,10 +31,6 @@ const _commandMap = {
 class CommandClient {
     constructor(){
         this.tracker = new Tracker();
-    }
-
-    hasCommand(command){
-        return _commandMap[command] != undefined;
     }
 
     static isCommand(message){
@@ -49,8 +47,13 @@ class CommandClient {
     execute(message){
         let parsedMessage = this.parseMessage(message);
         try{
-            if(!this.hasCommand(parsedMessage.command)) return;
-            _commandMap[parsedMessage.command].execute(message, parsedMessage.args, this.tracker);
+            if(!_commandMap.has(parsedMessage.command)) throw new Error("Command not found.");
+            let cmd = _commandMap.get(parsedMessage.command);
+            if(cmd.name === "help"){
+                cmd.execute(message, parsedMessage.args, _commandMap);
+            } else{
+                cmd.execute(message, parsedMessage.args, this.tracker);
+            }
         } catch (error){
             message.reply(error.message);
         }
