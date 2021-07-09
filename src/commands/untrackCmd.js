@@ -1,6 +1,9 @@
+const { prefix } = require('../config.json');
+
 module.exports = {
     name: 'untrack',
-    description: "Untrack a show using the given AniList MediaID",
+    desc: "Untrack a show using the given AniList MediaID",
+    syntax: `${prefix}untrack [showID]`,
     execute(message, args, tracker){
         let mediaId = args[0];
         message.channel.send(tracker.untrack(mediaId));

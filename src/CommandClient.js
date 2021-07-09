@@ -10,6 +10,7 @@ const untrackCmd = require("./commands/untrackCmd");
 const listCmd = require("./commands/listCmd");
 const airtodayCmd = require("./commands/airtodayCmd");
 const cronCmd = require('./commands/cronCmd');
+const helpCmd = require('./commands/helpCmd');
 // Local command map
 const _commandMap = new Map([
     [`${leskinenCmd.name}`, leskinenCmd],
@@ -17,7 +18,8 @@ const _commandMap = new Map([
     [`${untrackCmd.name}`, untrackCmd],
     [`${listCmd.name}`, listCmd],
     [`${airtodayCmd.name}`, airtodayCmd],
-    [`${cronCmd.name}`, cronCmd]
+    [`${cronCmd.name}`, cronCmd],
+    [`${helpCmd.name}`, helpCmd]
 ]);
 
 /**
@@ -45,28 +47,15 @@ class CommandClient {
     execute(message){
         let parsedMessage = this.parseMessage(message);
         try{
-            if(parsedMessage.command === "help"){
-                this.help(message, parsedMessage.args);
-            } else if(!_commandMap.has(parsedMessage.command)){
-                throw new Error("Command not found.");
+            if(!_commandMap.has(parsedMessage.command)) throw new Error("Command not found.");
+            let cmd = _commandMap.get(parsedMessage.command);
+            if(cmd.name === "help"){
+                cmd.execute(message, parsedMessage.args, _commandMap);
             } else{
-                _commandMap.get(parsedMessage.command).execute(message, parsedMessage.args, this.tracker);
-            } 
+                cmd.execute(message, parsedMessage.args, this.tracker);
+            }
         } catch (error){
             message.reply(error.message);
-        }
-    }
-
-    help(message, args){
-        if(args.length == 0){
-            let header = "For more details, enter \`help commandName\`.\n";
-            let cmdPrintout = `**Command List:**\n`;
-            for (const cmd of _commandMap.values()){
-                cmdPrintout += `**|-** \`${cmd.name} : ${cmd.description}\`\n`;
-            }
-            message.reply(header + cmdPrintout);
-        } else{
-            // todo
         }
     }
 }

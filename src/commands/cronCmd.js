@@ -1,4 +1,5 @@
 // Imports
+const { prefix } = require('../config.json');
 // https://github.com/node-schedule/node-schedule
 const Scheduler = require('node-schedule');
 
@@ -15,7 +16,8 @@ var cronJob = null;
 
 module.exports = {
     name: 'cron',
-    description: "Toggle scheduled printout of shows airing that day",
+    desc: "Toggle scheduled printout of shows airing that day",
+    syntax: `${prefix}cron [enable | disable]`,
     execute(message, args, tracker){
         switch(args[0]){
             case CRON_MODE.ENABLE:

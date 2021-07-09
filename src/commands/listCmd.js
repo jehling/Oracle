@@ -1,6 +1,9 @@
+const { prefix } = require('../config.json');
+
 module.exports = {
     name: 'list',
-    description: "List all shows currently being tracked",
+    desc: "List all shows currently being tracked",
+    syntax: `${prefix}list`,
     execute(message, args, tracker){
         message.channel.send(tracker.printTrackingList());
     },
