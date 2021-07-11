@@ -1,5 +1,5 @@
 // Imports
-const { prefix } = require('../config.json');
+const { prefix } = require('../../json_files/config.json');
 // https://github.com/node-schedule/node-schedule
 const Scheduler = require('node-schedule');
 

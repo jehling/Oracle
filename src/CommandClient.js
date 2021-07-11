@@ -1,5 +1,5 @@
 // Imports
-const config = require('./config.json');
+const config = require('../json_files/config.json');
 const { Tracker } = require("./Tracker");
 
 // Constants
