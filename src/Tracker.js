@@ -157,10 +157,6 @@ class Tracker{
             }
         }
     }
-
-    backup(){
-        //todo
-    }
 }
 
 // EXPORTS

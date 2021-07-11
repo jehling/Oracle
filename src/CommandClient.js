@@ -30,7 +30,7 @@ const _commandMap = new Map([
  */
 class CommandClient {
     constructor(){
-        this.tracker = new Tracker();
+        this.trackerMap = new Map();
     }
 
     static isCommand(message){
@@ -52,11 +52,27 @@ class CommandClient {
             if(cmd.name === "help"){
                 cmd.execute(message, parsedMessage.args, _commandMap);
             } else{
-                cmd.execute(message, parsedMessage.args, this.tracker);
+                cmd.execute(message, parsedMessage.args, this.getTracker(message));
             }
         } catch (error){
             message.reply(error.message);
         }
+    }
+
+    setTracker(message){
+        this.trackerMap.set(message.guild.id, new Tracker());
+    }
+
+    getTracker(message){
+        return this.trackerMap.get(message.guild.id);
+    }
+
+    hasTracker(message){
+        return this.trackerMap.has(message.guild.id);
+    }
+
+    deleteTracker(message){
+        this.trackerMap.delete(message.guild.id);
     }
 }
 
