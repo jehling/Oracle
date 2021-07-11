@@ -25,19 +25,31 @@ const TRACKED_SHOW_LIMIT = 10;
  */
 class Tracker{
     constructor(){
-        this.trackedMediaIds = new Map();
+        this.mediaMap = new Map();
+    }
+
+    getMedia(mediaId){
+        return this.mediaMap.get(mediaId);
+    }
+
+    setMedia(key, val){
+        this.mediaMap.set(key, val);
+    }
+
+    deleteMedia(mediaId){
+        this.mediaMap.delete(mediaId);
+    }
+
+    hasMedia(mediaId){
+        return this.mediaMap.has(mediaId);
     }
 
     getMediaIds(){
-        return Array.from(this.trackedMediaIds.keys());
+        return Array.from(this.mediaMap.keys());
     }
 
     getNumIds(){
         return this.getMediaIds().length;
-    }
-
-    hasMediaId(mediaId){
-        return this.trackedMediaIds.has(mediaId);
     }
 
     isValidMediaId(mediaId){
@@ -46,7 +58,7 @@ class Tracker{
     }
 
     getShowTitle(mediaId){
-        let titleObj = this.trackedMediaIds.get(mediaId);
+        let titleObj = this.getMedia(mediaId);
         return titleObj.english? titleObj.english : titleObj.romaji;
     }
 
@@ -102,7 +114,7 @@ class Tracker{
             return `${CMD_IGN_STRING}: **TRACK LIMIT REACHED ${this.printShowCount()}.** Please untrack one or more to make room.`;
         } else if(!this.isValidMediaId(mediaId)){
             return `${CMD_IGN_STRING}: ${CMD_IGN_INVALID_ID_STRING}`;
-        } else if(this.hasMediaId(mediaId)){
+        } else if(this.hasMedia(mediaId)){
             return `${CMD_IGN_STRING}: Media already being tracked.`;
         }
         // Execution
@@ -113,7 +125,7 @@ class Tracker{
             return `${err.name}: ${err.message}`;
         }
         if(show && show.status == AIRING_STATUS.RELEASING){
-            this.trackedMediaIds.set(mediaId, show.title);
+            this.setMedia(mediaId, show.title);
             return `**Now Tracking ${this.printShowCount()}:** ${this.showToString(mediaId)}.`;
         } else if(show && show.status != AIRING_STATUS.RELEASING){
             return `${CMD_IGN_STRING}: Media Status \`${show.status} != ${AIRING_STATUS.RELEASING}\``;
@@ -125,12 +137,12 @@ class Tracker{
         // Error Checking
         if(!this.isValidMediaId(mediaId)){
             return `${CMD_IGN_STRING}: ${CMD_IGN_INVALID_ID_STRING}`;
-        } else if(!this.hasMediaId(mediaId)){
+        } else if(!this.hasMedia(mediaId)){
             return `${CMD_IGN_STRING}: Media not currently being tracked.`;
         }
         // Execution
         let untrackedShowStr = this.showToString(mediaId);
-        this.trackedMediaIds.delete(mediaId);
+        this.deleteMedia(mediaId);
         let responseString = `**Untracked ${this.printShowCount()}:** ${untrackedShowStr}.`;
         return responseString;
     }
@@ -140,10 +152,14 @@ class Tracker{
             let showObj = await ALProxy.searchShowId(mediaId);
             if(showObj.status != AIRING_STATUS.RELEASING){
                 let untrackedShowStr = this.showToString(mediaId);
-                this.trackedMediaIds.delete(mediaId);
+                this.deleteMedia(mediaId);
                 console.log(`**Refreshed ${this.printShowCount()}:** No longer airing - ${untrackedShowStr}`);
             }
         }
+    }
+
+    backup(){
+        //todo
     }
 }
 

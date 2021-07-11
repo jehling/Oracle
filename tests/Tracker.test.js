@@ -42,21 +42,21 @@ describe('Tracker Suite', () => {
     // SETUP & TEARDOWN
     beforeEach(() => {
         tracker = new Tracker();
-        tracker.trackedMediaIds.set(mockShowObj.id, mockShowObj.title);
+        tracker.mediaMap.set(mockShowObj.id, mockShowObj.title);
         ALProxy.mockReset();
     });
     
     // TESTS
     test('getMediaIds', () => {
         expect(tracker.getMediaIds()).toStrictEqual([mockShowObj.id]);
-        tracker.trackedMediaIds.clear();
+        tracker.mediaMap.clear();
         expect(tracker.getMediaIds()).toHaveLength(0);
     });
 
-    test('hasMediaId', () => {
-        expect(tracker.hasMediaId(mockShowObj.id)).toBeTruthy();
-        tracker.trackedMediaIds.clear();
-        expect(tracker.hasMediaId(mockShowObj.id)).toBeFalsy();
+    test('hasMedia', () => {
+        expect(tracker.hasMedia(mockShowObj.id)).toBeTruthy();
+        tracker.mediaMap.clear();
+        expect(tracker.hasMedia(mockShowObj.id)).toBeFalsy();
     });
 
     test('isValidMediaId', () => {
@@ -69,7 +69,7 @@ describe('Tracker Suite', () => {
     test('getShowTitle', () => {
         expect(tracker.getShowTitle(mockShowObj.id)).toEqual(mockShowObj.title.english);
         let tracker2 = new Tracker();
-        tracker2.trackedMediaIds.set(mockShowObj.id, { romaji: mockShowObj.title.romaji });
+        tracker2.mediaMap.set(mockShowObj.id, { romaji: mockShowObj.title.romaji });
         expect(tracker2.getShowTitle(mockShowObj.id)).toEqual(mockShowObj.title.romaji);
     });
 
@@ -80,40 +80,40 @@ describe('Tracker Suite', () => {
 
     test('listToString', () => {
         expect(tracker.listToString([mockShowObj.id])).toEqual(testListString);
-        tracker.trackedMediaIds.clear();
+        tracker.mediaMap.clear();
         expect(tracker.listToString([])).toEqual("");
     });
 
     test('printTrackingList', () => {
         expect(tracker.printTrackingList()).toEqual(testTrackString);
-        tracker.trackedMediaIds.clear();
+        tracker.mediaMap.clear();
         expect(tracker.printTrackingList()).toEqual(testNoTrackString);
     });
 
     test('printAiringList', () => {
         ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
         ALProxy.searchShowId.mockResolvedValue(mockShowObj);
-        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
+        tracker.mediaMap.set(mockNAShowObj.id, mockNAShowObj.title);
 
     });
 
     test('isAiringToday', async () => {
         ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
-        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
+        tracker.mediaMap.set(mockNAShowObj.id, mockNAShowObj.title);
         expect(await tracker.isAiringToday(mockNAShowObj.id)).toBeFalsy();
         expect(await tracker.isAiringToday(mockShowObj.id)).toBeTruthy();
     });
 
     test('getAiringTodayList', async () => {
         ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
-        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
+        tracker.mediaMap.set(mockNAShowObj.id, mockNAShowObj.title);
         expect(await tracker.getAiringTodayList()).toStrictEqual([mockShowObj.id]);
     });
 
     test('track', async () => {
         ALProxy.searchShowId.mockResolvedValueOnce(mockNAShowObj);
         ALProxy.searchShowId.mockResolvedValue(mockShowObj);
-        tracker.trackedMediaIds.clear();
+        tracker.mediaMap.clear();
         expect(await tracker.track(mockNAShowObj.id)).toEqual(`**Command Ignored**: Media Status \`${mockNAShowObj.status} != RELEASING\``);
         expect(await tracker.track(mockShowObj.id)).toEqual(`**Now Tracking (1/10):** ${testShowString}.`);
         const lenSpy = jest.spyOn(tracker, 'getNumIds').mockReturnValueOnce(100).mockReturnValueOnce(100);
@@ -130,10 +130,10 @@ describe('Tracker Suite', () => {
 
     test('refreshMediaIds', async () => {
         ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
-        tracker.trackedMediaIds.set(mockNAShowObj.id, mockNAShowObj.title);
-        expect(tracker.hasMediaId(mockNAShowObj.id)).toBeTruthy();
+        tracker.mediaMap.set(mockNAShowObj.id, mockNAShowObj.title);
+        expect(tracker.hasMedia(mockNAShowObj.id)).toBeTruthy();
         await tracker.refreshMediaIds();
-        expect(tracker.hasMediaId(mockNAShowObj.id)).toBeFalsy();
+        expect(tracker.hasMedia(mockNAShowObj.id)).toBeFalsy();
     });
 });
 
