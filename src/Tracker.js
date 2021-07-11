@@ -28,6 +28,22 @@ class Tracker{
         this.mediaMap = new Map();
     }
 
+    getMedia(mediaId){
+        return this.mediaMap.get(mediaId);
+    }
+
+    setMedia(key, val){
+        this.mediaMap.set(key, val);
+    }
+
+    deleteMedia(mediaId){
+        this.mediaMap.delete(mediaId);
+    }
+
+    hasMedia(mediaId){
+        return this.mediaMap.has(mediaId);
+    }
+
     getMediaIds(){
         return Array.from(this.mediaMap.keys());
     }
@@ -36,17 +52,13 @@ class Tracker{
         return this.getMediaIds().length;
     }
 
-    hasMediaId(mediaId){
-        return this.mediaMap.has(mediaId);
-    }
-
     isValidMediaId(mediaId){
         let intMediaId = Number(mediaId);
         return Number.isInteger(intMediaId) && intMediaId > 0;
     }
 
     getShowTitle(mediaId){
-        let titleObj = this.mediaMap.get(mediaId);
+        let titleObj = this.getMedia(mediaId);
         return titleObj.english? titleObj.english : titleObj.romaji;
     }
 
@@ -102,7 +114,7 @@ class Tracker{
             return `${CMD_IGN_STRING}: **TRACK LIMIT REACHED ${this.printShowCount()}.** Please untrack one or more to make room.`;
         } else if(!this.isValidMediaId(mediaId)){
             return `${CMD_IGN_STRING}: ${CMD_IGN_INVALID_ID_STRING}`;
-        } else if(this.hasMediaId(mediaId)){
+        } else if(this.hasMedia(mediaId)){
             return `${CMD_IGN_STRING}: Media already being tracked.`;
         }
         // Execution
@@ -113,7 +125,7 @@ class Tracker{
             return `${err.name}: ${err.message}`;
         }
         if(show && show.status == AIRING_STATUS.RELEASING){
-            this.mediaMap.set(mediaId, show.title);
+            this.setMedia(mediaId, show.title);
             return `**Now Tracking ${this.printShowCount()}:** ${this.showToString(mediaId)}.`;
         } else if(show && show.status != AIRING_STATUS.RELEASING){
             return `${CMD_IGN_STRING}: Media Status \`${show.status} != ${AIRING_STATUS.RELEASING}\``;
@@ -125,12 +137,12 @@ class Tracker{
         // Error Checking
         if(!this.isValidMediaId(mediaId)){
             return `${CMD_IGN_STRING}: ${CMD_IGN_INVALID_ID_STRING}`;
-        } else if(!this.hasMediaId(mediaId)){
+        } else if(!this.hasMedia(mediaId)){
             return `${CMD_IGN_STRING}: Media not currently being tracked.`;
         }
         // Execution
         let untrackedShowStr = this.showToString(mediaId);
-        this.mediaMap.delete(mediaId);
+        this.deleteMedia(mediaId);
         let responseString = `**Untracked ${this.printShowCount()}:** ${untrackedShowStr}.`;
         return responseString;
     }
@@ -140,7 +152,7 @@ class Tracker{
             let showObj = await ALProxy.searchShowId(mediaId);
             if(showObj.status != AIRING_STATUS.RELEASING){
                 let untrackedShowStr = this.showToString(mediaId);
-                this.mediaMap.delete(mediaId);
+                this.deleteMedia(mediaId);
                 console.log(`**Refreshed ${this.printShowCount()}:** No longer airing - ${untrackedShowStr}`);
             }
         }

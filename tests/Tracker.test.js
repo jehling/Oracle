@@ -53,10 +53,10 @@ describe('Tracker Suite', () => {
         expect(tracker.getMediaIds()).toHaveLength(0);
     });
 
-    test('hasMediaId', () => {
-        expect(tracker.hasMediaId(mockShowObj.id)).toBeTruthy();
+    test('hasMedia', () => {
+        expect(tracker.hasMedia(mockShowObj.id)).toBeTruthy();
         tracker.mediaMap.clear();
-        expect(tracker.hasMediaId(mockShowObj.id)).toBeFalsy();
+        expect(tracker.hasMedia(mockShowObj.id)).toBeFalsy();
     });
 
     test('isValidMediaId', () => {
@@ -131,9 +131,9 @@ describe('Tracker Suite', () => {
     test('refreshMediaIds', async () => {
         ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
         tracker.mediaMap.set(mockNAShowObj.id, mockNAShowObj.title);
-        expect(tracker.hasMediaId(mockNAShowObj.id)).toBeTruthy();
+        expect(tracker.hasMedia(mockNAShowObj.id)).toBeTruthy();
         await tracker.refreshMediaIds();
-        expect(tracker.hasMediaId(mockNAShowObj.id)).toBeFalsy();
+        expect(tracker.hasMedia(mockNAShowObj.id)).toBeFalsy();
     });
 });
 
