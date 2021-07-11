@@ -2,12 +2,10 @@ const config = require('../json_files/config.json');
 const Discord = require('discord.js');
 const { CommandClient } = require('./CommandClient');
 
-// Server Data Structure
-let serverMap = new Map();
-
 // Discord.js
 // https://discord.js.org/#/
 const client = new Discord.Client();
+const cc = new CommandClient();
 
 client.once('ready', () => {
     console.log('Ready!');
@@ -19,11 +17,10 @@ client.on('message', message => {
     // Setup Server & Process Commands
     if(CommandClient.isCommand(message)){
         if(message.guild.available){
-            let guildID = message.guild.id;
-            if(!serverMap.has(guildID)){
-                serverMap.set(guildID, new CommandClient());
+            if(!cc.hasTracker(message)){
+                cc.setTracker(message);
             }
-            serverMap.get(guildID).execute(message);
+            cc.execute(message);
         }
     }
 });
