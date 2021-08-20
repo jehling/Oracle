@@ -24,7 +24,10 @@ module.exports = {
                 if(!cronJob){
                     try{
                         cronJob = Scheduler.scheduleJob(CRON_RULE, function(){
-                            tracker.printAirTodayList().then(responseString => message.channel.send(responseString));
+                            tracker.refreshMediaIds()
+                            .then(refreshStr => message.channel.send(refreshStr))
+                            .then(printAirTodayList)
+                            .then(airTodayStr => message.channel.send(airTodayStr));
                         });
                         message.channel.send("Cron job enabled.");
                     } catch(error){

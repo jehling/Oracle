@@ -132,8 +132,9 @@ describe('Tracker Suite', () => {
         ALProxy.searchShowId.mockImplementation(id => id === mockNAShowObj.id? mockNAShowObj : mockShowObj);
         tracker.mediaMap.set(mockNAShowObj.id, mockNAShowObj.title);
         expect(tracker.hasMedia(mockNAShowObj.id)).toBeTruthy();
-        await tracker.refreshMediaIds();
+        let responseStr = await tracker.refreshMediaIds();
         expect(tracker.hasMedia(mockNAShowObj.id)).toBeFalsy();
+        expect(responseStr).toEqual(`**Refreshed Show List (No Longer Airing)**\n|- \`2\`: "Naruto"`);
     });
 });
 

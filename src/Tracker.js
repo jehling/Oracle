@@ -148,14 +148,15 @@ class Tracker{
     }
 
     async refreshMediaIds(){
+        let refreshStr = (this.getMediaIds().length > 0? "**Refreshed Show List (No Longer Airing)**" : "");
         for (const mediaId of this.getMediaIds()){
             let showObj = await ALProxy.searchShowId(mediaId);
             if(showObj.status != AIRING_STATUS.RELEASING){
-                let untrackedShowStr = this.showToString(mediaId);
+                refreshStr += `\n|- ${this.showToString(mediaId)}`;
                 this.deleteMedia(mediaId);
-                console.log(`**Refreshed ${this.printShowCount()}:** No longer airing - ${untrackedShowStr}`);
             }
         }
+        return refreshStr;
     }
 }
 
