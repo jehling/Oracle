@@ -3,7 +3,7 @@ const { ALProxy } = require('./ALProxy');
 const fs = require('fs').promises;
 
 // Constants
-const OUTPUT_DIR = "./json_files/";
+const OUTPUT_DIR = "./json_files/backups/";
 const AIRING_STATUS = {
     FINISHED: "FINISHED",
     RELEASING: "RELEASING",
@@ -178,9 +178,9 @@ class Tracker{
     }
 
     async load(){
-        const data = await fs.readFile(OUTPUT_DIR + `${this.guid}_backup.json`);
-        let backupIdList = JSON.parse(data);
         try{
+            const data = await fs.readFile(OUTPUT_DIR + `${this.guid}_backup.json`);
+            let backupIdList = JSON.parse(data);
             backupIdList.map(mediaId => this.track(mediaId));
             return "Success: loaded tracked show list.";
         } catch (error){

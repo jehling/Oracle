@@ -1,4 +1,4 @@
 src/test.js
-json_files/*_backup.json
+json_files/backups/*.json
 node_modules/
 .vscode
