@@ -1,7 +1,9 @@
 // Imports
 const { ALProxy } = require('./ALProxy');
+const fs = require('fs').promises;
 
 // Constants
+const OUTPUT_DIR = "./json_files/";
 const AIRING_STATUS = {
     FINISHED: "FINISHED",
     RELEASING: "RELEASING",
@@ -24,8 +26,9 @@ const TRACKED_SHOW_LIMIT = 10;
  * Also contains printout logic since its the info expert
  */
 class Tracker{
-    constructor(){
+    constructor(guid){
         this.mediaMap = new Map();
+        this.guid = guid;
     }
 
     getMedia(mediaId){
@@ -157,6 +160,33 @@ class Tracker{
             }
         }
         return refreshStr;
+    }
+
+    async save(){
+        let mediaIdList = [];
+        for(const mediaId of this.mediaMap.keys()){
+            mediaIdList.push(mediaId);
+        }
+        let data = JSON.stringify(mediaIdList);
+        try{
+            await fs.writeFile(OUTPUT_DIR + `${this.guid}_backup.json`, data);
+            return "Success: saved tracked show list.";
+        } catch (error){
+            console.log(error);
+            return "ERROR: Failed to save tracked show list.";
+        }
+    }
+
+    async load(){
+        const data = await fs.readFile(OUTPUT_DIR + `${this.guid}_backup.json`);
+        let backupIdList = JSON.parse(data);
+        try{
+            backupIdList.map(mediaId => this.track(mediaId));
+            return "Success: loaded tracked show list.";
+        } catch (error){
+            console.log(error);
+            return "ERROR: Failed to load tracked show list.";
+        }
     }
 }
 

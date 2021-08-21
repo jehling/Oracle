@@ -11,6 +11,9 @@ const listCmd = require("./commands/listCmd");
 const airtodayCmd = require("./commands/airtodayCmd");
 const cronCmd = require('./commands/cronCmd');
 const helpCmd = require('./commands/helpCmd');
+const saveCmd = require('./commands/saveCmd');
+const loadCmd = require('./commands/loadCmd');
+
 // Local command map
 const _commandMap = new Map([
     [`${leskinenCmd.name}`, leskinenCmd],
@@ -19,7 +22,9 @@ const _commandMap = new Map([
     [`${listCmd.name}`, listCmd],
     [`${airtodayCmd.name}`, airtodayCmd],
     [`${cronCmd.name}`, cronCmd],
-    [`${helpCmd.name}`, helpCmd]
+    [`${helpCmd.name}`, helpCmd],
+    [`${saveCmd.name}`,saveCmd],
+    [`${loadCmd.name}`,loadCmd]
 ]);
 
 /**
@@ -60,7 +65,7 @@ class CommandClient {
     }
 
     setTracker(message){
-        this.trackerMap.set(message.guild.id, new Tracker());
+        this.trackerMap.set(message.guild.id, new Tracker(message.guild.id));
     }
 
     getTracker(message){
