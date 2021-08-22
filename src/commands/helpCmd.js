@@ -9,7 +9,7 @@ module.exports = {
             let header = "For more specific info, try \`help commandName\`.\n";
             let cmdPrintout = `**Command List:**\n`;
             for (const cmd of cmdMap.values()){
-                cmdPrintout += `|- \`${cmd.name}: ${cmd.desc}\`\n`;
+                cmdPrintout += `|- \`${cmd.name}\`: ${cmd.desc}\n`;
             }
             message.reply(header + cmdPrintout);
         } else{

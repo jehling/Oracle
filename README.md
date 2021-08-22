@@ -12,6 +12,8 @@ Lightweight Discord bot designed to interface with [AniList](https://anilist.co/
     - [Airing Today](#airing-today)
     - [Cron](#cron)
     - [Leskinen](#leskinen)
+    - [Save](#save)
+    - [Load](#load)
 
 ## Setup
 After adding Oracle to your Discord server, enter a channel you want the bot to push daily reports to and use the `.cron enable` command. Henceforth, Oracle will push summaries of shows airing that day to this channel. \
@@ -94,3 +96,13 @@ const _commandMap = new Map([
 - **Syntax:** `.leskinen` 
 - **Description:** Ask Professor Leskinen what's on his mind.
 - **Ex:** `.leskinen --> "..."`
+
+### Save
+- **Syntax:** `.save` 
+- **Description:** Backup a tracker's list of shows. Click [this](./json_files/backups/README.md) for more info.
+- **Ex:** `.save --> "SUCCESS: Saved tracked show list."`
+
+### Load
+- **Syntax:** `.load` 
+- **Description:** Load the tracker's backup list of shows. Click [this](./json_files/backups/README.md) for more info.
+- **Ex:** `.load --> "SUCCESS: loaded tracked show list."`
