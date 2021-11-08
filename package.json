@@ -4,7 +4,8 @@
   "description": "Discord bot which interacts with the AniList API to retrieve show information",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "bot": "node src/index.js"
   },
   "repository": {
     "type": "git",
