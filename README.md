@@ -16,7 +16,7 @@ Lightweight Discord bot designed to interface with [AniList](https://anilist.co/
     - [Load](#load)
 
 ## Setup
-After adding Oracle to your Discord server, enter a channel you want the bot to push daily reports to and use the `.cron enable` command. Henceforth, Oracle will push summaries of shows airing that day to this channel. \
+After adding Oracle to your Discord server, enter a channel you want the bot to push daily reports to and use the `.cron enable` command. Henceforth, Oracle will push summaries of shows airing that day to this channel.
 
 To select a different channel use the `.cron disable` command and repeat the process described above.
 
