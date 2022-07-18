@@ -1,6 +1,3 @@
-// Imports
-const fetch = require('node-fetch');
-
 // Constants
 const AL_ENDPOINT = "https://graphql.anilist.co";
 const AL_REQUEST_BODY = 
